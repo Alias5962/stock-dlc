@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2f855a">
+<title>Stock DLC / DDM</title>
+<style>
+:root{--bg:#f3f6f4;--card:#fff;--tx:#1c2a23;--mut:#6b7a72;--line:#e2e9e5;--pri:#2f855a;--pri2:#e6f4ec;--ok:#2f855a;--warn:#d98a00;--bad:#d64545;--inp:#f7faf8}
+@media (prefers-color-scheme:dark){:root{--bg:#101613;--card:#1a221e;--tx:#eaf2ed;--mut:#93a39a;--line:#2a352f;--pri:#3fa874;--pri2:#1f3a2c;--inp:#141b17}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:system-ui,Roboto,sans-serif;background:var(--bg);color:var(--tx);padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.wrap{max-width:560px;margin:0 auto;padding:16px 16px 40px}
+header{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:14px}
+h1{font-size:22px;margin:0}header p{margin:2px 0 0;color:var(--mut);font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:14px}
+label{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--mut);text-transform:uppercase;margin:10px 0 5px}
+input,select{width:100%;font:inherit;font-size:16px;color:var(--tx);background:var(--inp);border:1px solid var(--line);border-radius:12px;padding:12px}
+.row{display:flex;gap:10px}.row>*{flex:1;min-width:0}
+button{font:inherit;border:0;border-radius:12px;padding:12px 14px;font-weight:600;color:var(--tx)}
+.pri{background:var(--pri);color:#fff;width:100%;font-size:16px;margin-top:14px}
+.sec{background:var(--pri2);color:var(--pri)}
+.dark{background:#1c2a23;color:#fff}
+.ico{width:48px;flex:none;background:var(--pri);color:#fff;font-size:20px;padding:0}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:6px}
+.chip{flex:none;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:9px 14px;font-size:14px}
+.chip.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.stat{border-radius:14px;padding:10px;text-align:center;font-size:12px;color:var(--mut);background:var(--card);border:1px solid var(--line)}
+.stat b{display:block;font-size:22px;color:var(--tx)}
+.item{display:flex;gap:12px;background:var(--card);border:1px solid var(--line);border-left:5px solid var(--ok);border-radius:16px;padding:12px;margin-bottom:10px;align-items:center}
+.item.warn{border-left-color:var(--warn)}.item.bad{border-left-color:var(--bad)}
+.thumb{width:54px;height:54px;border-radius:10px;object-fit:contain;background:#fff;border:1px solid var(--line);flex:none;display:grid;place-items:center;font-size:26px}
+.info{flex:1;min-width:0}.nm{font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sub{color:var(--mut);font-size:13px;margin:2px 0 6px}
+.badge{display:inline-block;font-size:12px;font-weight:700;border-radius:8px;padding:4px 8px;background:var(--pri2);color:var(--ok)}
+.warn .badge{background:#fff1d6;color:#9a6200}.bad .badge{background:#fde4e4;color:var(--bad)}
+.side{display:flex;flex-direction:column;align-items:center;gap:6px}
+.qty{display:flex;align-items:center;gap:6px}.qty button{width:30px;height:30px;padding:0;background:var(--pri2);color:var(--pri)}
+.del{background:none;padding:4px;font-size:18px}
+.empty{text-align:center;color:var(--mut);padding:30px 10px}
+dialog{border:0;border-radius:20px;padding:16px;width:min(92vw,520px);background:var(--card);color:var(--tx)}
+dialog::backdrop{background:#0008}
+.dayrow{display:flex;flex-wrap:wrap;gap:8px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:40px;background:#1c2a23;color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;z-index:99;opacity:0;transition:.3s;pointer-events:none;max-width:90vw}
+.toast.on{opacity:1}
+small{color:var(--mut)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+ <div><h1>Stock &amp; DLC / DDM</h1><p id="sub"></p></div>
+ <button class="sec" id="btnSet">⚙️ Réglages</button>
+</header>
+<div class="stats">
+ <div class="stat"><b id="sBad">0</b>Périmés</div>
+ <div class="stat"><b id="sWarn">0</b>Bientôt</div>
+ <div class="stat"><b id="sAll">0</b>Produits</div>
+</div>
+
+<div class="card">
+ <label style="margin-top:0">1. Code-barres (EAN-13 / EAN-8)</label>
+ <div class="row" style="flex-wrap:nowrap">
+  <button class="ico" id="btnScan" aria-label="Scanner">📷</button>
+  <input id="code" inputmode="numeric" placeholder="Code-barres…" style="flex:1">
+  <button class="dark" id="btnOff" style="flex:none">🔍 OFF</button>
+ </div>
+ <label>Nom du produit *</label>
+ <input id="name" placeholder="Ex : Yaourt nature">
+ <div class="row">
+  <div><label>Marque</label><input id="brand" placeholder="Ex : Danone"></div>
+  <div><label>Emplacement *</label>
+   <select id="loc"><option value="frigo">❄️ Frigo</option><option value="congel">🧊 Congélateur</option><option value="garde">📦 Garde-manger</option></select></div>
+ </div>
+ <div class="row">
+  <div><label>Type de date</label>
+   <select id="type"><option value="DLC">DLC – À consommer jusqu’au</option><option value="DDM">DDM – À consommer de préférence avant</option></select></div>
+  <div><label>Date *</label><input id="date" type="date"></div>
+ </div>
+ <div class="row">
+  <div><label>Quantité</label><input id="qtyIn" type="number" min="1" value="1" inputmode="numeric"></div>
+  <div><label>&nbsp;</label><button class="sec" id="btnQuick" style="width:100%">+ 7 j</button></div>
+ </div>
+ <button class="pri" id="btnAdd">＋ Ajouter au stock</button>
+</div>
+
+<div class="chips" id="chips"></div>
+<div id="list"></div>
+</div>
+
+<dialog id="dlg">
+ <h2 style="margin:0 0 4px">Notifications</h2>
+ <label>Me prévenir (jours avant la date)</label>
+ <div class="dayrow" id="dayChips"></div>
+ <label>Ajouter un délai (jours)</label>
+ <div class="row"><input id="extraDay" type="number" min="0" inputmode="numeric" placeholder="ex : 10"><button class="sec" id="addDay" style="flex:none">Ajouter</button></div>
+ <label>Heure du rappel</label>
+ <input id="hour" type="time">
+ <div id="permState" style="font-size:14px;margin-top:10px"></div>
+ <div class="row" style="margin-top:10px"><button class="sec" id="btnPerm">Activer</button><button class="sec" id="btnTest">Tester (5 s)</button></div>
+ <label>Sauvegarde</label>
+ <div class="row"><button class="sec" id="btnExp">Copier</button><button class="sec" id="btnImp">Restaurer</button></div>
+ <small style="display:block;margin-top:8px">Données stockées uniquement sur ce téléphone. Elles sont perdues si l’appli est désinstallée : pensez à copier la sauvegarde.</small>
+ <button class="pri" onclick="dlg.close()">Fermer</button>
+</dialog>
+<div class="toast" id="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const P=(window.Capacitor&&window.Capacitor.Plugins)||{};
+const LOCS={frigo:['❄️','Frigo'],congel:['🧊','Congélateur'],garde:['📦','Garde-manger']};
+let S={items:[],days:[30,15,7,3,1,0],hour:'09:00'},filter='all',img='';
+
+async function load(){
+ try{let v;if(P.Preferences)v=(await P.Preferences.get({key:'stockdlc'})).value;else v=localStorage.getItem('stockdlc');
+  if(v)S=Object.assign(S,JSON.parse(v))}catch(e){}
+}
+async function save(){
+ const v=JSON.stringify(S);
+ try{if(P.Preferences)await P.Preferences.set({key:'stockdlc',value:v});else localStorage.setItem('stockdlc',v)}catch(e){}
+ resched();
+}
+const toast=t=>{const e=$('toast');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),2800)};
+const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const today=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
+const daysLeft=s=>Math.round((new Date(s+'T00:00:00')-today())/864e5);
+const fmt=s=>s.split('-').reverse().join('/');
+const hash=s=>{let h=7;for(const c of s)h=(h*31+c.charCodeAt(0))%2147483000;return h+1};
+
+function status(it){const d=daysLeft(it.date);const min=Math.max(0,...S.days.filter(x=>x<=7),1);
+ if(d<0)return['bad',it.type==='DLC'?'Périmé depuis '+(-d)+' j':'Dépassé de '+(-d)+' j'];
+ if(d===0)return['bad','Aujourd’hui'];
+ if(d<=min)return['warn','Dans '+d+' j'];
+ return['',d+' j restants'];}
+
+function render(){
+ $('chips').innerHTML=[['all','Tous'],['frigo','❄️ Frigo'],['congel','🧊 Congél.'],['garde','📦 Garde-manger']]
+  .map(([k,l])=>`<button class="chip ${filter===k?'on':''}" data-f="${k}">${l}</button>`).join('');
+ const items=S.items.filter(i=>filter==='all'||i.loc===filter).sort((a,b)=>a.date.localeCompare(b.date));
+ $('sAll').textContent=S.items.length;
+ $('sBad').textContent=S.items.filter(i=>daysLeft(i.date)<0).length;
+ $('sWarn').textContent=S.items.filter(i=>{const d=daysLeft(i.date);return d>=0&&status(i)[0]!==''}).length;
+ $('sub').textContent='Rappels à '+[...S.days].sort((a,b)=>b-a).map(d=>d===0?'J':d+'j').join(', ')+' • '+S.hour;
+ if(!items.length){$('list').innerHTML='<div class="empty">🥗<br>Aucun produit. Scannez ou ajoutez-en un !</div>';return}
+ $('list').innerHTML=items.map(it=>{const [c,t]=status(it);
+  const im=it.img?`<img class="thumb" src="${esc(it.img)}" alt="" onerror="this.outerHTML='<div class=thumb>${LOCS[it.loc][0]}</div>'">`:`<div class="thumb">${LOCS[it.loc][0]}</div>`;
+  return `<div class="item ${c}">${im}<div class="info"><div class="nm">${esc(it.name)}</div>
+  <div class="sub">${esc(it.brand||'—')} • ${LOCS[it.loc][1]}</div>
+  <span class="badge">${it.type} : ${fmt(it.date)} · ${t}</span></div>
+  <div class="side"><div class="qty"><button data-q="-1" data-id="${it.id}">−</button><b>${it.qty}</b><button data-q="1" data-id="${it.id}">+</button></div>
+  <button class="del" data-del="${it.id}" aria-label="Supprimer">🗑️</button></div></div>`}).join('');
+}
+$('chips').onclick=e=>{const f=e.target.dataset.f;if(f){filter=f;render()}};
+$('list').onclick=async e=>{const t=e.target;
+ if(t.dataset.del&&confirm('Supprimer ce produit ?')){S.items=S.items.filter(i=>i.id!==t.dataset.del);await save();render()}
+ if(t.dataset.q){const it=S.items.find(i=>i.id===t.dataset.id);it.qty+=+t.dataset.q;if(it.qty<1)S.items=S.items.filter(i=>i!==it);await save();render()}};
+
+$('btnAdd').onclick=async()=>{
+ const name=$('name').value.trim(),date=$('date').value;
+ if(!name||!date){toast('Nom et date obligatoires');return}
+ S.items.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),name,brand:$('brand').value.trim(),loc:$('loc').value,type:$('type').value,date,qty:Math.max(1,+$('qtyIn').value||1),img,barcode:$('code').value.trim()});
+ ['code','name','brand','date'].forEach(i=>$(i).value='');$('qtyIn').value=1;img='';
+ await save();render();toast('Ajouté au stock ✔');
+};
+$('btnQuick').onclick=()=>{const d=new Date();d.setDate(d.getDate()+7);$('date').value=d.toISOString().slice(0,10)};
+
+async function lookup(code){
+ code=String(code).replace(/\D/g,'');if(code.length<8){toast('Code invalide');return}
+ toast('Recherche…');
+ try{const r=await fetch('https://world.openfoodfacts.org/api/v2/product/'+code+'.json?fields=product_name,product_name_fr,brands,image_front_small_url');
+  const j=await r.json();
+  if(j.status!==1){toast('Produit inconnu : saisissez-le à la main');return}
+  const p=j.product;$('name').value=p.product_name_fr||p.product_name||'';
+  $('brand').value=(p.brands||'').split(',').slice(0,2).join(', ').trim();img=p.image_front_small_url||'';toast('Produit trouvé ✔');
+ }catch(e){toast('Hors ligne : saisie manuelle')}
+}
+$('btnOff').onclick=()=>lookup($('code').value);
+
+$('btnScan').onclick=async()=>{
+ const B=P.BarcodeScanner;if(!B){toast('Scanner disponible dans l’appli Android');return}
+ try{
+  try{const a=await B.isGoogleBarcodeScannerModuleAvailable();
+   if(!a.available){toast('Installation du module de scan… réessayez dans 30 s');await B.installGoogleBarcodeScannerModule();return}}catch(_){}
+  const r=await B.scan({formats:['EAN_13','EAN_8','UPC_E']});
+  if(r.barcodes&&r.barcodes.length){$('code').value=r.barcodes[0].rawValue;lookup(r.barcodes[0].rawValue)}
+ }catch(e){toast('Scan annulé ou impossible')}
+};
+
+// ---- Rappels programmés (fonctionnent appli fermée) ----
+async function resched(){
+ const L=P.LocalNotifications;if(!L)return;
+ try{
+  const p=await L.getPending();
+  if(p.notifications.length)await L.cancel({notifications:p.notifications.map(n=>({id:n.id}))});
+  const [h,m]=(S.hour||'09:00').split(':').map(Number),now=Date.now(),list=[];
+  S.items.forEach(it=>{[...new Set(S.days)].forEach(d=>{
+   const at=new Date(it.date+'T00:00:00');at.setDate(at.getDate()-d);at.setHours(h,m,0,0);
+   if(at.getTime()<=now)return;
+   list.push({id:hash(it.id+'|'+d),title:(it.type==='DLC'?'⚠️ DLC : ':'🔔 DDM : ')+it.name,
+    body:d===0?(it.type==='DLC'?'À consommer aujourd’hui !':'Date de préférence atteinte aujourd’hui')+' ('+LOCS[it.loc][1]+')':'Dans '+d+' jour'+(d>1?'s':'')+' – '+fmt(it.date)+' ('+LOCS[it.loc][1]+')',
+    schedule:{at,allowWhileIdle:true}})})});
+  list.sort((a,b)=>a.schedule.at-b.schedule.at);
+  if(list.length)await L.schedule({notifications:list.slice(0,400)});
+ }catch(e){}
+}
+async function permUI(){
+ let s='Non disponible (ouvrez l’appli Android)';
+ if(P.LocalNotifications){try{const r=await P.LocalNotifications.checkPermissions();s=r.display==='granted'?'✅ Notifications activées':r.display==='denied'?'⛔ Refusées : autorisez-les dans les réglages Android':'🔕 Non activées'}catch(e){}}
+ $('permState').textContent=s}
+$('btnPerm').onclick=async()=>{if(P.LocalNotifications){await P.LocalNotifications.requestPermissions();resched()}permUI()};
+$('btnTest').onclick=async()=>{const L=P.LocalNotifications;if(!L){toast('Test possible dans l’appli Android');return}
+ const r=await L.requestPermissions();permUI();if(r.display!=='granted'){toast('Notifications refusées');return}
+ await L.schedule({notifications:[{id:1,title:'Test d’alerte',body:'Les notifications fonctionnent ✔',schedule:{at:new Date(Date.now()+5000),allowWhileIdle:true}}]});toast('Alerte dans 5 secondes…')};
+
+function dayUI(){$('dayChips').innerHTML=[...S.days].sort((a,b)=>b-a).map(d=>`<button class="chip on" data-d="${d}">${d===0?'Le jour J':'J-'+d} ✕</button>`).join('')||'<small>Aucun rappel</small>';$('hour').value=S.hour}
+$('dayChips').onclick=async e=>{const d=e.target.dataset.d;if(d!==undefined){S.days=S.days.filter(x=>x!==+d);await save();dayUI();render()}};
+$('addDay').onclick=async()=>{const v=parseInt($('extraDay').value);if(isNaN(v)||v<0)return;if(!S.days.includes(v))S.days.push(v);$('extraDay').value='';await save();dayUI();render()};
+$('hour').onchange=async()=>{if($('hour').value){S.hour=$('hour').value;await save();render()}};
+$('btnSet').onclick=()=>{dayUI();permUI();$('dlg').showModal()};
+$('dlg').addEventListener('click',e=>{if(e.target===$('dlg'))$('dlg').close()});
+
+$('btnExp').onclick=async()=>{try{await navigator.clipboard.writeText(JSON.stringify(S));toast('Sauvegarde copiée : collez-la dans une note')}catch(e){prompt('Copiez cette sauvegarde :',JSON.stringify(S))}};
+$('btnImp').onclick=async()=>{const t=prompt('Collez la sauvegarde :');if(!t)return;
+ try{const j=JSON.parse(t);if(!Array.isArray(j.items))throw 0;S=Object.assign(S,j);await save();dayUI();render();toast('Restauré ✔')}catch(_){toast('Sauvegarde invalide')}};
+
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)render()});
+(async()=>{await load();render();
+ if(P.LocalNotifications){try{const r=await P.LocalNotifications.checkPermissions();if(r.display==='prompt'||r.display==='prompt-with-rationale')await P.LocalNotifications.requestPermissions()}catch(e){}}
+ resched()})();
+</script>
+</body>
+</html>
