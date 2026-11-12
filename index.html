@@ -3,279 +3,497 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#2f855a">
+<meta name="theme-color" content="#0f7a54">
 <title>Stock DLC / DDM</title>
 <style>
-:root{--bg:#f3f6f4;--card:#fff;--tx:#1c2a23;--mut:#6b7a72;--line:#e2e9e5;--pri:#2f855a;--pri2:#e6f4ec;--ok:#2f855a;--warn:#d98a00;--bad:#d64545;--inp:#f7faf8}
-@media (prefers-color-scheme:dark){:root{--bg:#101613;--card:#1a221e;--tx:#eaf2ed;--mut:#93a39a;--line:#2a352f;--pri:#3fa874;--pri2:#1f3a2c;--inp:#141b17}}
+:root{--bg:#f3f5f7;--card:#fff;--tx:#14201a;--mut:#68766f;--line:#e5eaee;--pri:#0f7a54;--pri-d:#0b5f42;--pri2:#e4f4ec;--ok:#0f7a54;--okbg:#e4f4ec;--warn:#b86e00;--warnbg:#fff0d4;--bad:#c93232;--badbg:#fde6e6;--inp:#f6f8fa;--sh:0 1px 2px rgba(16,24,40,.06),0 6px 16px rgba(16,24,40,.05)}
+@media (prefers-color-scheme:dark){:root{--bg:#0e1411;--card:#18211c;--tx:#eaf2ed;--mut:#93a39a;--line:#26322b;--pri:#3fb27f;--pri-d:#2f9468;--pri2:#1c3a2c;--ok:#4cc38a;--okbg:#17352a;--warn:#f0b04a;--warnbg:#3a2c10;--bad:#ff7b7b;--badbg:#3d1c1c;--inp:#121a16;--sh:none}}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;font-family:system-ui,Roboto,sans-serif;background:var(--bg);color:var(--tx);padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
-.wrap{max-width:560px;margin:0 auto;padding:16px 16px 40px}
-header{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}
-h1{font-size:22px;margin:0}header p{margin:2px 0 0;color:var(--mut);font-size:13px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:14px}
-label{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--mut);text-transform:uppercase;margin:10px 0 5px}
-input,select{width:100%;font:inherit;font-size:16px;color:var(--tx);background:var(--inp);border:1px solid var(--line);border-radius:12px;padding:12px}
-.row{display:flex;gap:10px}.row>*{flex:1;min-width:0}
-button{font:inherit;border:0;border-radius:12px;padding:12px 14px;font-weight:600;color:var(--tx)}
-.pri{background:var(--pri);color:#fff;width:100%;font-size:16px;margin-top:14px}
-.sec{background:var(--pri2);color:var(--pri)}
-.dark{background:#1c2a23;color:#fff}
-.ico{width:48px;flex:none;background:var(--pri);color:#fff;font-size:20px;padding:0}
-.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:6px}
-.chip{flex:none;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:9px 14px;font-size:14px}
-.chip.on{background:var(--pri);color:#fff;border-color:var(--pri)}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.stat{border-radius:14px;padding:10px;text-align:center;font-size:12px;color:var(--mut);background:var(--card);border:2px solid var(--line)}
-.stat b{display:block;font-size:22px;color:var(--tx)}
+html,body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,Roboto,"Segoe UI",sans-serif}
+body{padding-top:env(safe-area-inset-top)}
+main{max-width:600px;margin:0 auto;padding:14px 16px calc(96px + env(safe-area-inset-bottom))}
+.screen{display:none}.screen.on{display:block}
+h1{font-size:26px;letter-spacing:-.02em;margin:6px 0 2px}
+.subt{color:var(--mut);font-size:14px;margin:0 0 14px}
+.card{background:var(--card);border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:var(--sh);border:1px solid var(--line)}
+.lbl{display:block;font-size:12px;font-weight:700;color:var(--mut);margin:14px 0 6px;letter-spacing:.02em}
+.lbl:first-child{margin-top:0}
+input,select{width:100%;font:inherit;font-size:16px;color:var(--tx);background:var(--inp);border:1.5px solid var(--line);border-radius:14px;padding:13px 14px;outline:none}
+input:focus,select:focus{border-color:var(--pri)}
+button{font:inherit;border:0;border-radius:14px;padding:13px 16px;font-weight:650;color:var(--tx);background:none;cursor:pointer}
+button:active{transform:scale(.98)}
+.btn{background:var(--pri);color:#fff;width:100%;font-size:16px;display:flex;align-items:center;justify-content:center;gap:9px}
+.btn.sec{background:var(--pri2);color:var(--pri)}
+.btn.out{background:var(--card);border:1.5px solid var(--line);color:var(--tx)}
+.btn.red{background:var(--bad);color:#fff}
+.btn.big{padding:18px;font-size:17px;border-radius:18px}
+.row{display:flex;gap:10px}.row>*{min-width:0}.row>.g{flex:1}
+svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.search{position:relative;margin-bottom:12px}
+.search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--mut)}
+.search input{padding-left:44px;border-radius:16px;background:var(--card);box-shadow:var(--sh)}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.seg.two{grid-template-columns:repeat(2,1fr);margin-bottom:0}
+.stat{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:10px 6px;text-align:center;font-size:12px;color:var(--mut);box-shadow:var(--sh)}
+.stat b{display:block;font-size:24px;color:var(--tx);line-height:1.2}
 .stat.on{border-color:var(--pri);background:var(--pri2)}
 .stat.bad b{color:var(--bad)}.stat.soon b{color:var(--warn)}
-.banner{background:#fff1d6;color:#7a4e00;border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:14px;font-weight:600;width:100%;text-align:left}
-.count{font-size:12px;color:var(--mut);margin:2px 2px 6px}
-.frame{height:calc(var(--rows,3)*96px + 8px);overflow-y:auto;overscroll-behavior:contain;scroll-snap-type:y proximity;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:8px 8px 0}
-.item{display:flex;gap:10px;height:88px;background:var(--bg);border:1px solid var(--line);border-left:5px solid var(--ok);border-radius:14px;padding:8px 10px;margin-bottom:8px;align-items:center;scroll-snap-align:start}
-.item.warn{border-left-color:var(--warn)}.item.bad{border-left-color:var(--bad)}
-.thumb{width:48px;height:48px;border-radius:10px;object-fit:contain;background:#fff;border:1px solid var(--line);flex:none;display:grid;place-items:center;font-size:24px}
-.info{flex:1;min-width:0}.nm{font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sub{color:var(--mut);font-size:12px;margin:1px 0 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.badge{display:inline-block;font-size:12px;font-weight:700;border-radius:8px;padding:3px 8px;background:var(--pri2);color:var(--ok)}
-.warn .badge{background:#fff1d6;color:#9a6200}.bad .badge{background:#fde4e4;color:var(--bad)}
-.side{display:flex;flex-direction:column;align-items:center;gap:2px}
-.qty{display:flex;align-items:center;gap:6px}.qty button{width:30px;height:30px;padding:0;background:var(--pri2);color:var(--pri)}
-.del{background:none;padding:2px 6px;font-size:17px}
-.empty{text-align:center;color:var(--mut);padding:24px 10px}
-dialog{border:0;border-radius:20px;padding:16px;width:min(94vw,520px);max-height:90vh;overflow-y:auto;background:var(--card);color:var(--tx)}
-dialog::backdrop{background:#0008}
-h3{margin:18px 0 4px;font-size:16px}h3:first-child{margin-top:0}
-.help{font-size:13px;color:var(--mut);margin:0 0 6px;line-height:1.4}
-.chk{display:flex;align-items:center;gap:12px;padding:8px 0;margin:0;font-size:16px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--tx);border-bottom:1px solid var(--line)}
-.chk input{width:22px;height:22px;flex:none}
-.locrow{display:flex;gap:8px;margin-bottom:8px}.locrow input:first-child{width:62px;flex:none;text-align:center}
-.locrow button{flex:none;padding:10px 12px}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:40px;background:#1c2a23;color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;z-index:99;opacity:0;transition:.3s;pointer-events:none;max-width:90vw;text-align:center}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;background:var(--card);border:1.5px solid var(--line);border-radius:999px;padding:9px 14px;font-size:14px;font-weight:600}
+.chip.on{background:var(--pri);border-color:var(--pri);color:#fff}
+.toolbar{display:flex;justify-content:space-between;align-items:center;margin:2px 2px 8px;font-size:13px;color:var(--mut)}
+.toolbar select{width:auto;padding:6px 10px;font-size:13px;border-radius:10px}
+.prod{display:flex;gap:12px;background:var(--card);border-radius:18px;padding:12px;margin-bottom:10px;box-shadow:var(--sh);border:1px solid var(--line);align-items:center}
+.thumb{width:68px;height:68px;border-radius:14px;object-fit:contain;background:#fff;border:1px solid var(--line);flex:none;display:grid;place-items:center;font-size:30px}
+.pi{flex:1;min-width:0}
+.pn{font-weight:700;font-size:15px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pm{color:var(--mut);font-size:12.5px;margin:3px 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:4px 10px;background:var(--okbg);color:var(--ok)}
+.pill.warn{background:var(--warnbg);color:var(--warn)}.pill.bad{background:var(--badbg);color:var(--bad)}
+.pq{display:flex;flex-direction:column;align-items:center;gap:4px}
+.step{display:flex;align-items:center;gap:8px}
+.step button{width:34px;height:34px;padding:0;border-radius:11px;background:var(--pri2);color:var(--pri);font-size:19px;line-height:1}
+.step b{min-width:22px;text-align:center;font-size:16px}
+.empty{text-align:center;color:var(--mut);padding:40px 10px}.empty div{font-size:42px}
+.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:6px 6px calc(6px + env(safe-area-inset-bottom));z-index:20}
+.tab{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;font-weight:650;color:var(--mut);padding:8px 2px;border-radius:14px}
+.tab.on{color:var(--pri);background:var(--pri2)}
+.hint{font-size:13px;color:var(--mut);line-height:1.45;margin:6px 0 0}
+.msg{border-radius:14px;padding:12px 14px;margin-top:10px;font-size:14px;line-height:1.45;background:var(--inp)}
+.msg.ok{background:var(--okbg);color:var(--ok)}.msg.bad{background:var(--badbg);color:var(--bad)}.msg.warn{background:var(--warnbg);color:var(--warn)}
+.banner{background:var(--warnbg);color:var(--warn);border-radius:14px;padding:11px 14px;margin-bottom:12px;font-size:14px;font-weight:650;width:100%;text-align:left}
+.dateIn{font-size:24px;text-align:center;letter-spacing:.06em;font-weight:700;padding:15px}
+.qrow{display:flex;align-items:center;justify-content:space-between}
+.qrow .step button{width:44px;height:44px;font-size:24px}.qrow .step b{font-size:22px;min-width:36px}
+.chk{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);font-size:16px}
+.chk input{width:22px;height:22px;flex:none;accent-color:var(--pri)}
+.locrow{display:flex;gap:8px;margin-bottom:8px}
+.ibtn{width:54px;flex:none;font-size:24px;padding:0;background:var(--inp);border:1.5px solid var(--line)}
+.status{font-size:14px;line-height:1.7;background:var(--inp);border-radius:14px;padding:11px 13px;margin:8px 0}
+dialog{border:0;padding:0;background:var(--card);color:var(--tx);max-width:none}
+dialog::backdrop{background:#0009}
+dialog.sheet{width:100%;max-height:92vh;margin:auto 0 0;border-radius:24px 24px 0 0;overflow-y:auto;padding:18px 16px calc(18px + env(safe-area-inset-bottom))}
+dialog.mid{width:min(92vw,420px);border-radius:22px;padding:18px;max-height:85vh;overflow-y:auto}
+.grab{width:42px;height:5px;background:var(--line);border-radius:9px;margin:0 auto 14px}
+.shead{display:flex;gap:14px;align-items:center;margin-bottom:6px}.shead .thumb{width:84px;height:84px}
+.lot{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px;border:1.5px solid var(--line);border-radius:14px;margin-bottom:8px}
+.lot.rec{border-color:var(--pri);background:var(--pri2)}
+.igrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}.igrid button{font-size:26px;padding:8px 0;background:var(--inp)}
+#crop{position:fixed;inset:0;background:#000;z-index:60;display:none;flex-direction:column;padding-top:env(safe-area-inset-top)}
+#crop .top{color:#fff;padding:12px 16px;font-size:15px;line-height:1.4}
+#crop .box{flex:1;position:relative;min-height:0}
+#crop canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+#crop .bar{display:flex;gap:10px;padding:12px 16px calc(12px + env(safe-area-inset-bottom))}
+#crop .bar button{flex:1}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(90px + env(safe-area-inset-bottom));background:#14201a;color:#fff;padding:11px 18px;border-radius:14px;font-size:14px;z-index:99;opacity:0;transition:.25s;pointer-events:none;max-width:90vw;text-align:center;box-shadow:0 8px 24px #0005}
 .toast.on{opacity:1}
-.status{font-size:14px;line-height:1.6;background:var(--inp);border-radius:12px;padding:10px 12px;margin:8px 0}
 </style>
 </head>
 <body>
-<div class="wrap">
-<header>
- <div><h1>Stock &amp; DLC / DDM</h1><p id="sub"></p></div>
- <button class="sec" id="btnSet">⚙️ Réglages</button>
-</header>
+<main>
 
-<div class="stats">
- <button class="stat bad" data-s="bad"><b id="sBad">0</b>Périmés</button>
- <button class="stat soon" data-s="soon"><b id="sWarn">0</b>Bientôt</button>
- <button class="stat" data-s="all"><b id="sAll">0</b>Tous</button>
-</div>
-<button class="banner" id="banner" style="display:none">☁️ Pensez à sauvegarder sur Google Drive (appuyez ici)</button>
-
-<div class="card">
- <label style="margin-top:0">1. Code-barres (EAN-13 / EAN-8)</label>
- <div class="row" style="flex-wrap:nowrap">
-  <button class="ico" id="btnScan" aria-label="Scanner">📷</button>
-  <input id="code" inputmode="numeric" placeholder="Code-barres…" style="flex:1">
-  <button class="dark" id="btnOff" style="flex:none">🔍 OFF</button>
+<!-- ============ STOCK ============ -->
+<section class="screen on" id="s-stock">
+ <h1>Mon stock</h1><p class="subt" id="subt"></p>
+ <button class="banner" id="banner" style="display:none"></button>
+ <div class="search"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="q" type="search" placeholder="Rechercher un produit, une marque, un code…" autocomplete="off"></div>
+ <div class="seg" id="seg">
+  <button class="stat bad" data-s="bad"><b id="sBad">0</b>Périmés</button>
+  <button class="stat soon" data-s="soon"><b id="sSoon">0</b>Bientôt</button>
+  <button class="stat on" data-s="all"><b id="sAll">0</b>Tous</button>
  </div>
- <label>Nom du produit *</label>
- <input id="name" placeholder="Ex : Yaourt nature">
- <div class="row">
-  <div><label>Marque</label><input id="brand" placeholder="Ex : Danone"></div>
-  <div><label>Emplacement *</label><select id="loc"></select></div>
+ <div class="chips" id="chips"></div>
+ <div class="toolbar"><span id="count"></span>
+  <select id="sort"><option value="date">Date la plus proche</option><option value="name">Nom A→Z</option><option value="new">Ajouts récents</option></select></div>
+ <div id="list"></div>
+</section>
+
+<!-- ============ ENTRÉE ============ -->
+<section class="screen" id="s-in">
+ <h1>Ajouter un produit</h1><p class="subt">Scannez le code-barres, puis indiquez la date.</p>
+ <button class="btn big" id="btnScan"><svg class="i" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Scanner le code-barres</button>
+ <div class="card" style="margin-top:14px">
+  <label class="lbl">Code-barres</label>
+  <div class="row"><input class="g" id="code" inputmode="numeric" placeholder="ou saisissez le numéro"><button class="btn sec" id="btnOff" style="width:auto">Chercher</button></div>
+  <div id="inStock" class="msg warn" style="display:none"></div>
+  <div class="row" style="margin-top:14px;align-items:center"><div id="pthumb" class="thumb">🛒</div><div class="g"><label class="lbl" style="margin-top:0">Nom du produit *</label><input id="name" placeholder="Ex : Yaourt nature"></div></div>
+  <label class="lbl">Marque</label><input id="brand" placeholder="Ex : Danone">
+  <label class="lbl">Emplacement *</label><div class="chips" id="locChips"></div>
+  <label class="lbl">Type de date</label>
+  <div class="seg two" id="typeSeg"><button class="stat on" data-t="DLC"><b style="font-size:17px">DLC</b>À consommer jusqu’au</button><button class="stat" data-t="DDM"><b style="font-size:17px">DDM</b>De préférence avant</button></div>
+  <div class="hint" id="typeHint"></div>
+  <label class="lbl">Date * (JJ/MM/AAAA)</label>
+  <input id="date" class="dateIn" inputmode="numeric" placeholder="JJ/MM/AAAA" maxlength="10" autocomplete="off">
+  <button class="btn sec" id="btnOcr" style="margin-top:10px"><svg class="i" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>Lire la date avec l’appareil photo</button>
+  <div id="ocrMsg" class="msg" style="display:none"></div>
+  <label class="lbl">Quantité</label>
+  <div class="qrow"><span class="hint" style="margin:0">Nombre d’unités de ce lot</span><div class="step"><button id="qMinus">−</button><b id="qVal">1</b><button id="qPlus">+</button></div></div>
+  <button class="btn" id="btnAdd" style="margin-top:18px">Ajouter au stock</button>
  </div>
- <div class="row">
-  <div><label>Type de date</label>
-   <select id="type"><option value="DLC">DLC (consommer jusqu’au)</option><option value="DDM">DDM (de préférence avant)</option></select></div>
-  <div><label>Date *</label>
-   <div class="row" style="flex-wrap:nowrap;gap:6px"><input id="date" inputmode="numeric" placeholder="JJ/MM/AAAA" maxlength="10" autocomplete="off">
-   <button class="ico" id="btnOcr" aria-label="Lire la date" style="width:46px">📅</button></div></div>
+</section>
+
+<!-- ============ SORTIE ============ -->
+<section class="screen" id="s-out">
+ <h1>Retirer un produit</h1><p class="subt">Scannez à nouveau le code-barres pour le sortir du stock.</p>
+ <button class="btn big red" id="btnScanOut"><svg class="i" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Scanner pour retirer</button>
+ <div class="card" style="margin-top:14px">
+  <label class="lbl">Ou saisir le code-barres</label>
+  <div class="row"><input class="g" id="codeOut" inputmode="numeric" placeholder="Numéro du code-barres"><button class="btn sec" id="btnOutManual" style="width:auto">Retirer</button></div>
+  <div id="outMsg" class="msg" style="display:none"></div>
+  <p class="hint">Si plusieurs lots du même produit sont en stock, l’application vous propose de choisir. Le lot à la date la plus proche est recommandé.</p>
  </div>
- <small class="help" style="display:block;margin-top:6px">Tapez les chiffres : les « / » s’ajoutent seuls. Le bouton 📅 lit la date sur l’emballage avec l’appareil photo.</small>
- <input type="file" id="ocrFile" accept="image/*" capture="environment" hidden>
- <div class="status" id="ocrMsg" style="display:none"></div>
- <label>Quantité</label>
- <input id="qtyIn" type="number" min="1" value="1" inputmode="numeric">
- <button class="pri" id="btnAdd">＋ Ajouter au stock</button>
-</div>
+ <h2 style="font-size:16px;margin:18px 2px 8px">Dernières sorties</h2>
+ <div id="logList"></div>
+</section>
 
-<div class="chips" id="chips"></div>
-<div class="count" id="count"></div>
-<div class="frame" id="frame"></div>
-</div>
+<!-- ============ RÉGLAGES ============ -->
+<section class="screen" id="s-set">
+ <h1>Réglages</h1><p class="subt">Notifications, emplacements et sauvegarde.</p>
+ <div class="card">
+  <h2 style="font-size:17px;margin:0 0 4px">🔔 Notifications</h2>
+  <p class="hint" style="margin:0 0 6px">Cochez quand être prévenu avant la date de chaque produit. « 7 jours avant » = une alerte une semaine avant la date.</p>
+  <div id="dayList"></div>
+  <label class="lbl">Autre délai (jours avant)</label>
+  <div class="row"><input class="g" id="extraDay" type="number" min="0" inputmode="numeric" placeholder="ex : 10"><button class="btn sec" id="addDay" style="width:auto">Ajouter</button></div>
+  <label class="lbl">Heure de l’alerte</label><input id="hour" type="time">
+  <div class="status" id="permState"></div>
+  <div class="row"><button class="btn sec g" id="btnPerm">1. Autoriser</button><button class="btn sec g" id="btnExact">2. Alarmes</button></div>
+  <button class="btn out" id="btnTest" style="margin-top:8px">3. Test dans 5 secondes</button>
+  <p class="hint">Si le test n’apparaît pas : Paramètres Android › Applications › Stock DLC › Notifications, puis Batterie › « Sans restriction ».</p>
+ </div>
+ <div class="card">
+  <h2 style="font-size:17px;margin:0 0 4px">⏳ « Bientôt périmé »</h2>
+  <p class="hint" style="margin:0 0 8px">Un produit est « bientôt périmé » si sa date est dans moins de :</p>
+  <div class="row" style="align-items:center"><input class="g" id="soon" type="number" min="1" inputmode="numeric"><span>jours</span></div>
+ </div>
+ <div class="card">
+  <h2 style="font-size:17px;margin:0 0 4px">📍 Emplacements</h2>
+  <p class="hint" style="margin:0 0 10px">Touchez l’icône pour la changer, modifiez le nom, ou ajoutez un emplacement.</p>
+  <div id="locList"></div>
+  <div class="locrow"><button class="ibtn" id="newE">📦</button><input class="g" id="newN" placeholder="Nouvel emplacement"><button class="btn sec" id="addLoc" style="width:auto">Ajouter</button></div>
+ </div>
+ <div class="card">
+  <h2 style="font-size:17px;margin:0 0 4px">💾 Enregistrement des données</h2>
+  <p class="hint" style="margin:0 0 10px">Les données sont toujours enregistrées sur le téléphone. Vous pouvez aussi les sauvegarder sur Google Drive.</p>
+  <select id="bk"><option value="local">Téléphone seulement</option><option value="both">Téléphone + Google Drive</option></select>
+  <div class="row" style="margin-top:10px"><button class="btn sec g" id="btnBk">Sauvegarder</button><button class="btn sec g" id="btnRs">Restaurer</button></div>
+  <input type="file" id="fileIn" accept=".json,application/json" hidden>
+  <p class="hint">« Sauvegarder » ouvre le menu de partage : choisissez Drive ou « Enregistrer dans les fichiers ».</p>
+ </div>
+ <p class="hint" style="text-align:center">Stock DLC / DDM · version 3.0</p>
+</section>
+</main>
 
-<dialog id="dlg">
- <h3>🔔 Notifications</h3>
- <p class="help">Cochez quand vous voulez être prévenu avant la date de chaque produit. Exemple : « 7 jours avant » = une alerte une semaine avant la date.</p>
- <div id="dayList"></div>
- <label>Autre délai (nombre de jours avant)</label>
- <div class="row"><input id="extraDay" type="number" min="0" inputmode="numeric" placeholder="ex : 10"><button class="sec" id="addDay" style="flex:none">Ajouter</button></div>
- <label>À quelle heure recevoir l’alerte ?</label>
- <input id="hour" type="time">
- <h3>Vérifier que ça marche</h3>
- <div class="status" id="permState"></div>
- <div class="row" style="margin-bottom:8px"><button class="sec" id="btnPerm">1. Autoriser</button><button class="sec" id="btnExact">2. Alarmes précises</button></div>
- <button class="sec" id="btnTest" style="width:100%">3. Test dans 5 secondes</button>
- <p class="help" style="margin-top:8px">Si le test n’apparaît pas : Paramètres Android › Applications › Stock DLC › Notifications, puis Batterie › « Sans restriction ».</p>
+<nav class="tabs">
+ <button class="tab on" data-go="stock"><svg class="i" viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>Stock</button>
+ <button class="tab" data-go="in"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>Entrée</button>
+ <button class="tab" data-go="out"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>Sortie</button>
+ <button class="tab" data-go="set"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 12h3M11 12h9M4 17h11M19 17h1"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="17" r="2"/></svg>Réglages</button>
+</nav>
 
- <h3>⏳ « Bientôt »</h3>
- <p class="help">Un produit est « bientôt périmé » quand sa date est dans moins de ce nombre de jours.</p>
- <input id="soon" type="number" min="1" inputmode="numeric">
-
- <h3>📋 Affichage</h3>
- <label style="margin-top:0">Lignes visibles dans la liste</label>
- <select id="rows"><option value="2">2 lignes</option><option value="3">3 lignes</option></select>
-
- <h3>📍 Emplacements</h3>
- <p class="help">Modifiez le nom ou l’icône, ou ajoutez un emplacement.</p>
- <div id="locList"></div>
- <div class="locrow"><input id="newE" placeholder="🍷" maxlength="4"><input id="newN" placeholder="Nouvel emplacement"><button class="sec" id="addLoc">＋</button></div>
-
- <h3>💾 Enregistrement des données</h3>
- <p class="help">Les données sont toujours enregistrées sur le téléphone. Vous pouvez en plus les sauvegarder sur Google Drive.</p>
- <select id="bk"><option value="local">Téléphone seulement</option><option value="both">Téléphone + Google Drive</option></select>
- <div class="row" style="margin-top:10px"><button class="sec" id="btnBk">Sauvegarder maintenant</button><button class="sec" id="btnRs">Restaurer</button></div>
- <input type="file" id="fileIn" accept=".json,application/json" hidden>
- <p class="help" style="margin-top:8px">« Sauvegarder » ouvre le menu de partage : choisissez « Drive » ou « Enregistrer dans les fichiers ».</p>
- <button class="pri" onclick="dlg.close()">Fermer</button>
+<!-- Fiche produit -->
+<dialog id="sheet" class="sheet">
+ <div class="grab"></div>
+ <div class="shead"><div id="sThumb" class="thumb">📦</div><div class="g"><div class="pn" id="sTitle" style="font-size:18px"></div><div class="pm" id="sMeta"></div></div></div>
+ <label class="lbl">Nom</label><input id="sName">
+ <label class="lbl">Marque</label><input id="sBrand">
+ <label class="lbl">Emplacement</label><select id="sLoc"></select>
+ <label class="lbl">Type de date</label>
+ <select id="sType"><option value="DLC">DLC – consommer jusqu’au</option><option value="DDM">DDM – de préférence avant</option></select>
+ <label class="lbl">Date (JJ/MM/AAAA)</label><input id="sDate" class="dateIn" inputmode="numeric" maxlength="10" placeholder="JJ/MM/AAAA">
+ <label class="lbl">Quantité</label>
+ <div class="qrow"><span></span><div class="step"><button id="sMinus">−</button><b id="sQty">1</b><button id="sPlus">+</button></div></div>
+ <button class="btn" id="sSave" style="margin-top:16px">Enregistrer</button>
+ <div class="row" style="margin-top:8px"><button class="btn out g" id="sOne">Retirer 1</button><button class="btn out g" id="sDel" style="color:var(--bad)">Supprimer</button></div>
+ <button class="btn out" id="sClose" style="margin-top:8px">Fermer</button>
 </dialog>
+
+<!-- Choix du lot à retirer -->
+<dialog id="pick" class="mid">
+ <h2 style="margin:0 0 4px;font-size:18px" id="pickT">Plusieurs lots en stock</h2>
+ <p class="hint" style="margin:0 0 12px">Quel lot retirez-vous ?</p>
+ <div id="pickList"></div>
+ <button class="btn out" onclick="document.getElementById('pick').close()">Annuler</button>
+</dialog>
+
+<!-- Choix d'icône -->
+<dialog id="iconDlg" class="mid">
+ <h2 style="margin:0 0 12px;font-size:18px">Choisir une icône</h2>
+ <div class="igrid" id="igrid"></div>
+ <button class="btn out" style="margin-top:12px" onclick="document.getElementById('iconDlg').close()">Fermer</button>
+</dialog>
+
+<!-- Cadrage de la date -->
+<div id="crop">
+ <div class="top"><b>Entourez la date</b> avec le doigt (zone où « DLC / DDM » et la date sont imprimées), puis touchez « Lire ».</div>
+ <div class="box"><canvas id="cropCv"></canvas></div>
+ <div class="bar"><button class="btn out" id="cropX" style="width:auto;flex:none">Annuler</button><button class="btn" id="cropOk">Lire la date</button></div>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
 const $=id=>document.getElementById(id);
 const P=(window.Capacitor&&window.Capacitor.Plugins)||{};
 const p2=n=>String(n).padStart(2,'0');
-const DEF={items:[],days:[30,15,7,3,1,0],hour:'09:00',soon:7,rows:3,backup:'local',lastBackup:0,alerted:{},
+const DEF={items:[],days:[30,15,7,3,1,0],hour:'09:00',soon:7,backup:'local',lastBackup:0,alerted:{},known:{},log:[],
  locs:[{id:'frigo',e:'❄️',n:'Frigo'},{id:'congel',e:'🧊',n:'Congélateur'},{id:'garde',e:'📦',n:'Garde-manger'}]};
-let S=JSON.parse(JSON.stringify(DEF)),lf='all',sf='all',img='';
+let S=JSON.parse(JSON.stringify(DEF)),lf='all',sf='all',img='',curType='DLC',curLoc='frigo',qty=1,sheetId=null;
 const locOf=id=>S.locs.find(l=>l.id===id)||{e:'📦',n:id||'?'};
 
 async function load(){
  try{let v;if(P.Preferences)v=(await P.Preferences.get({key:'stockdlc'})).value;else v=localStorage.getItem('stockdlc');
   if(v)S=Object.assign(S,JSON.parse(v))}catch(e){}
  if(!Array.isArray(S.locs)||!S.locs.length)S.locs=JSON.parse(JSON.stringify(DEF.locs));
+ S.known=S.known||{};S.log=S.log||[];S.alerted=S.alerted||{};
+ if(!S.locs.some(l=>l.id===curLoc))curLoc=S.locs[0].id;
 }
 async function persist(){const v=JSON.stringify(S);try{if(P.Preferences)await P.Preferences.set({key:'stockdlc',value:v});else localStorage.setItem('stockdlc',v)}catch(e){}}
 async function save(){await persist();await resched()}
-const toast=t=>{const e=$('toast');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),3200)};
-const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const toast=t=>{const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),3200)};
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const today=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
 const isoToday=()=>{const d=new Date();return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate())};
 const daysLeft=s=>Math.round((new Date(s+'T00:00:00')-today())/864e5);
 const fmt=s=>s.split('-').reverse().join('/');
 const hash=s=>{let h=7;for(const c of s)h=(h*31+c.charCodeAt(0))%2147483000;return h+1};
-const mk=(y,m,d)=>{const dt=new Date(y,m-1,d);if(dt.getFullYear()!==y||dt.getMonth()!==m-1||dt.getDate()!==d||y<2020||y>2050)return null;return y+'-'+p2(m)+'-'+p2(d)};
-const parseFr=s=>{const m=/^(\d{2})\/(\d{2})\/(\d{4})$/.exec(s.trim());return m?mk(+m[3],+m[2],+m[1]):null};
+const mk=(y,m,d)=>{const dt=new Date(y,m-1,d);if(dt.getFullYear()!==y||dt.getMonth()!==m-1||dt.getDate()!==d||y<2000||y>2060)return null;return y+'-'+p2(m)+'-'+p2(d)};
+const parseFr=s=>{const m=/^(\d{2})\/(\d{2})\/(\d{4})$/.exec(String(s).trim());return m?mk(+m[3],+m[2],+m[1]):null};
+const newId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+const byDate=(a,b)=>a.date.localeCompare(b.date);
+
+function maskDate(el){
+ el.addEventListener('input',()=>{const d=el.value.replace(/\D/g,'').slice(0,8);
+  el.value=d.length>4?d.slice(0,2)+'/'+d.slice(2,4)+'/'+d.slice(4):d.length>2?d.slice(0,2)+'/'+d.slice(2):d});
+ el.addEventListener('blur',()=>{const d=el.value.replace(/\D/g,'');if(d.length===6)el.value=d.slice(0,2)+'/'+d.slice(2,4)+'/20'+d.slice(4)})}
+maskDate($('date'));maskDate($('sDate'));
 
 function status(it){const d=daysLeft(it.date);
  if(d<0)return['bad',it.type==='DLC'?'Périmé depuis '+(-d)+' j':'Dépassé de '+(-d)+' j'];
  if(d===0)return['bad','Aujourd’hui'];
  if(d<=S.soon)return['warn','Dans '+d+' j'];
- return['',d+' j restants'];}
-const isBad=i=>daysLeft(i.date)<0, isSoon=i=>{const d=daysLeft(i.date);return d>=0&&d<=S.soon};
+ return['','Dans '+d+' j'];}
+const isBad=i=>daysLeft(i.date)<0,isSoon=i=>{const d=daysLeft(i.date);return d>=0&&d<=S.soon};
 
+// ---------- Navigation ----------
+function go(n){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id==='s-'+n));
+ document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.go===n));
+ if(n==='set'){dayUI();locUI();permUI()}if(n==='out')logUI();if(n==='stock')render();scrollTo(0,0)}
+document.querySelector('.tabs').onclick=e=>{const b=e.target.closest('.tab');if(b)go(b.dataset.go)};
+
+// ---------- Liste ----------
+function visible(){
+ const q=$('q').value.trim().toLowerCase();let items=S.items.filter(i=>lf==='all'||i.loc===lf);
+ if(sf==='bad')items=items.filter(isBad);else if(sf==='soon')items=items.filter(isSoon);
+ if(q)items=items.filter(i=>(i.name+' '+(i.brand||'')+' '+(i.barcode||'')+' '+locOf(i.loc).n).toLowerCase().includes(q));
+ const so=$('sort').value;
+ if(so==='name')items.sort((a,b)=>a.name.localeCompare(b.name,'fr'));else if(so==='new')items.sort((a,b)=>(b.added||0)-(a.added||0));else items.sort(byDate);
+ return items}
 function render(){
- $('chips').innerHTML=[{id:'all',e:'',n:'Tous'},...S.locs].map(l=>`<button class="chip ${lf===l.id?'on':''}" data-f="${esc(l.id)}">${l.e} ${esc(l.n)}</button>`).join('');
- const inLoc=S.items.filter(i=>lf==='all'||i.loc===lf);
- $('sBad').textContent=S.items.filter(isBad).length;
- $('sWarn').textContent=S.items.filter(isSoon).length;
- $('sAll').textContent=S.items.length;
- document.querySelectorAll('.stat').forEach(b=>b.classList.toggle('on',b.dataset.s===sf));
- const items=inLoc.filter(i=>sf==='all'||(sf==='bad'?isBad(i):isSoon(i))).sort((a,b)=>a.date.localeCompare(b.date));
- $('sub').textContent='Rappels : '+[...S.days].sort((a,b)=>b-a).map(d=>d===0?'jour J':'J-'+d).join(', ')+' à '+S.hour;
- $('count').textContent=items.length?items.length+' produit'+(items.length>1?'s':'')+(items.length>S.rows?' · faites défiler ↕':''):'';
- const fr=$('frame');fr.style.setProperty('--rows',S.rows);
- if(!items.length){fr.innerHTML='<div class="empty">🥗<br>Aucun produit ici.</div>'}
- else fr.innerHTML=items.map(it=>{const [c,t]=status(it),L=locOf(it.loc);
+ $('chips').innerHTML=[{id:'all',e:'🗂️',n:'Tous les lieux'},...S.locs].map(l=>{const c=l.id==='all'?S.items.length:S.items.filter(i=>i.loc===l.id).length;
+  return `<button class="chip ${lf===l.id?'on':''}" data-f="${esc(l.id)}">${l.e} ${esc(l.n)} · ${c}</button>`}).join('');
+ const nb=S.items.filter(isBad).length,ns=S.items.filter(isSoon).length;
+ $('sBad').textContent=nb;$('sSoon').textContent=ns;$('sAll').textContent=S.items.length;
+ document.querySelectorAll('#seg .stat').forEach(b=>b.classList.toggle('on',b.dataset.s===sf));
+ $('subt').textContent=S.items.length?S.items.length+' lot'+(S.items.length>1?'s':'')+' en stock'+(nb+ns?' · '+(nb+ns)+' à surveiller':' · tout est en ordre'):'Aucun produit pour le moment';
+ const items=visible();
+ $('count').textContent=items.length+' résultat'+(items.length>1?'s':'');
+ $('list').innerHTML=items.length?items.map(it=>{const [c,t]=status(it),L=locOf(it.loc);
   const im=it.img?`<img class="thumb" src="${esc(it.img)}" alt="" onerror="this.outerHTML='<div class=thumb>${L.e}</div>'">`:`<div class="thumb">${L.e}</div>`;
-  return `<div class="item ${c}">${im}<div class="info"><div class="nm">${esc(it.name)}</div>
-  <div class="sub">${esc(it.brand||'—')} • ${esc(L.n)}</div>
-  <span class="badge">${it.type} ${fmt(it.date)} · ${t}</span></div>
-  <div class="side"><div class="qty"><button data-q="-1" data-id="${it.id}">−</button><b>${it.qty}</b><button data-q="1" data-id="${it.id}">+</button></div>
-  <button class="del" data-del="${it.id}" aria-label="Supprimer">🗑️</button></div></div>`}).join('');
+  return `<div class="prod" data-open="${it.id}">${im}<div class="pi"><div class="pn">${esc(it.name)}</div>
+  <div class="pm">${esc(it.brand||'—')} · ${L.e} ${esc(L.n)}</div>
+  <span class="pill ${c}">${it.type} ${fmt(it.date)} · ${t}</span></div>
+  <div class="pq"><div class="step"><button data-q="-1" data-id="${it.id}">−</button><b>${it.qty}</b><button data-q="1" data-id="${it.id}">+</button></div></div></div>`}).join('')
+  :`<div class="empty"><div>🥗</div>Aucun produit ne correspond.</div>`;
  const need=S.backup==='both'&&S.items.length&&Date.now()-S.lastBackup>7*864e5;
- $('banner').style.display=need?'block':'none';
+ $('banner').style.display=need?'block':'none';$('banner').textContent='☁️ Pensez à sauvegarder sur Google Drive (touchez ici)';
 }
-function fillSel(){const v=$('loc').value;$('loc').innerHTML=S.locs.map(l=>`<option value="${esc(l.id)}">${l.e} ${esc(l.n)}</option>`).join('');if(S.locs.some(l=>l.id===v))$('loc').value=v}
+$('q').addEventListener('input',render);$('sort').onchange=render;
+$('seg').onclick=e=>{const b=e.target.closest('.stat');if(b){sf=(sf===b.dataset.s&&sf!=='all')?'all':b.dataset.s;render()}};
+$('chips').onclick=e=>{const b=e.target.closest('.chip');if(b){lf=b.dataset.f;render()}};
+$('list').onclick=async e=>{
+ const q=e.target.closest('[data-q]');
+ if(q){const it=S.items.find(i=>i.id===q.dataset.id);if(!it)return;if(+q.dataset.q<0){await removeOne(it.id,true)}else{it.qty++;await save();render()}return}
+ const o=e.target.closest('[data-open]');if(o)openSheet(o.dataset.open)};
 
-document.querySelector('.stats').onclick=e=>{const b=e.target.closest('.stat');if(b){sf=(sf===b.dataset.s&&sf!=='all')?'all':b.dataset.s;render()}};
-$('chips').onclick=e=>{const f=e.target.dataset.f;if(f){lf=f;render()}};
-$('frame').onclick=async e=>{const t=e.target;
- if(t.dataset.del&&confirm('Supprimer ce produit ?')){S.items=S.items.filter(i=>i.id!==t.dataset.del);await save();render()}
- if(t.dataset.q){const it=S.items.find(i=>i.id===t.dataset.id);it.qty+=+t.dataset.q;if(it.qty<1)S.items=S.items.filter(i=>i!==it);await save();render()}};
+// ---------- Entrée ----------
+function fillLocChips(){$('locChips').innerHTML=S.locs.map(l=>`<button class="chip ${curLoc===l.id?'on':''}" data-l="${esc(l.id)}">${l.e} ${esc(l.n)}</button>`).join('');
+ $('sLoc').innerHTML=S.locs.map(l=>`<option value="${esc(l.id)}">${l.e} ${esc(l.n)}</option>`).join('')}
+$('locChips').onclick=e=>{const b=e.target.closest('[data-l]');if(b){curLoc=b.dataset.l;fillLocChips()}};
+function setType(t,why){curType=t;document.querySelectorAll('#typeSeg .stat').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+ $('typeHint').textContent=why||''}
+$('typeSeg').onclick=e=>{const b=e.target.closest('.stat');if(b)setType(b.dataset.t,'Choisi manuellement')};
+const setQty=n=>{qty=Math.max(1,n);$('qVal').textContent=qty};
+$('qMinus').onclick=()=>setQty(qty-1);$('qPlus').onclick=()=>setQty(qty+1);
+function setThumb(){$('pthumb').innerHTML=img?`<img src="${esc(img)}" style="width:100%;height:100%;object-fit:contain;border-radius:14px" alt="">`:'🛒'}
 
-// Saisie de date avec masque JJ/MM/AAAA
-$('date').addEventListener('input',()=>{const d=$('date').value.replace(/\D/g,'').slice(0,8);
- $('date').value=d.length>4?d.slice(0,2)+'/'+d.slice(2,4)+'/'+d.slice(4):d.length>2?d.slice(0,2)+'/'+d.slice(2):d});
+// Type (DLC/DDM) et emplacement proposés d'après la fiche Open Food Facts
+function guess(p){
+ const t=((p.categories_tags||[]).join(' ')+' '+(p.conservation_conditions||'')).toLowerCase();
+ if(/frozen|surgel|ice-cream|sorbet/.test(t))return{type:'DDM',loc:'congel',why:'Produit surgelé → DDM (proposé automatiquement)'};
+ if(/meat|poultry|beef|pork|veal|lamb|fish|seafood|salmon|sausage|ham\b|bacon|charcut|delicatessen|prepared-meat|ready-meal|prepared-salad|sandwich|fresh|chilled|pizza|quiche|tofu|cream|surimi|foie-gras|plats-prepares|viande|poisson|traiteur/.test(t))
+  return{type:'DLC',loc:'frigo',why:'Produit frais → DLC (proposé automatiquement)'};
+ if(/dair|yogurt|cheese|fromage|laitier|egg|butter|beurre|juice|jus/.test(t))return{type:'DDM',loc:'frigo',why:'Produit laitier ou frais → DDM (proposé automatiquement)'};
+ return{type:'DDM',loc:'garde',why:'Produit sec ou de conservation → DDM (proposé automatiquement)'}}
+function applyKnown(k,why){if(k.name)$('name').value=k.name;if(k.brand!=null)$('brand').value=k.brand;img=k.img||'';setThumb();
+ if(k.type)setType(k.type,why);if(k.loc&&S.locs.some(l=>l.id===k.loc)){curLoc=k.loc;fillLocChips()}}
+function stockNote(code){const lots=S.items.filter(i=>i.barcode===code).sort(byDate),b=$('inStock');
+ if(!code||!lots.length){b.style.display='none';return}
+ b.style.display='block';b.textContent='ℹ️ Déjà en stock : '+lots.reduce((a,i)=>a+i.qty,0)+' unité(s) en '+lots.length+' lot(s). Prochaine date : '+fmt(lots[0].date)+'.'}
 
+async function lookup(code){
+ code=String(code).replace(/\D/g,'');if(code.length<8){toast('Code-barres invalide');return}
+ $('code').value=code;stockNote(code);
+ const k=S.known[code];
+ if(k){applyKnown(k,'Reconnu : réglages mémorisés pour ce produit');toast('Produit reconnu ✔');return}
+ toast('Recherche du produit…');
+ try{const r=await fetch('https://world.openfoodfacts.org/api/v2/product/'+code+'.json?fields=product_name,product_name_fr,brands,image_front_small_url,categories_tags,conservation_conditions');
+  const j=await r.json();
+  if(j.status!==1){toast('Produit inconnu : saisissez-le à la main');return}
+  const p=j.product,g=guess(p);
+  applyKnown({name:p.product_name_fr||p.product_name||'',brand:(p.brands||'').split(',').slice(0,2).join(', ').trim(),img:p.image_front_small_url||'',type:g.type,loc:g.loc},g.why);
+  toast('Produit trouvé · '+g.type+' proposé ✔');
+ }catch(e){toast('Hors ligne : saisie manuelle')}
+}
+$('btnOff').onclick=()=>lookup($('code').value);
+
+async function scanBarcode(){
+ const B=P.BarcodeScanner;if(!B){toast('Le scanner fonctionne dans l’appli Android');return null}
+ try{
+  try{const a=await B.isGoogleBarcodeScannerModuleAvailable();
+   if(!a.available){toast('Installation du module de scan… réessayez dans 30 s');await B.installGoogleBarcodeScannerModule();return null}}catch(_){}
+  const r=await B.scan({formats:['EAN_13','EAN_8','UPC_E','UPC_A']});
+  return r.barcodes&&r.barcodes.length?r.barcodes[0].rawValue:null;
+ }catch(e){toast('Scan annulé ou impossible');return null}
+}
+$('btnScan').onclick=async()=>{const c=await scanBarcode();if(c)lookup(c)};
+
+// Ajout d'un lot (fusion si même produit, même date, même lieu)
+function addLot(o,n){
+ const key=x=>(x.barcode||(x.name||'').toLowerCase().trim())+'|'+x.date+'|'+x.loc+'|'+x.type;
+ const ex=S.items.find(i=>key(i)===key(o));
+ if(ex){ex.qty+=n;return true}
+ S.items.push({id:newId(),name:o.name,brand:o.brand||'',loc:o.loc,type:o.type,date:o.date,qty:n,img:o.img||'',barcode:o.barcode||'',added:Date.now()});return false}
 $('btnAdd').onclick=async()=>{
  const name=$('name').value.trim(),date=parseFr($('date').value);
  if(!name){toast('Indiquez le nom du produit');return}
  if(!date){toast('Date invalide : format JJ/MM/AAAA');return}
- S.items.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),name,brand:$('brand').value.trim(),loc:$('loc').value,type:$('type').value,date,qty:Math.max(1,+$('qtyIn').value||1),img,barcode:$('code').value.trim()});
- ['code','name','brand','date'].forEach(i=>$(i).value='');$('qtyIn').value=1;img='';
- await save();render();toast('Ajouté au stock ✔');await catchUp();
+ const code=$('code').value.replace(/\D/g,'');
+ const merged=addLot({name,brand:$('brand').value.trim(),loc:curLoc,type:curType,date,img,barcode:code},qty);
+ if(code)S.known[code]={name,brand:$('brand').value.trim(),img,type:curType,loc:curLoc};
+ ['code','name','brand','date'].forEach(i=>$(i).value='');img='';setThumb();setQty(1);$('inStock').style.display='none';ocrMsg('');setType('DLC','');
+ await save();render();toast(merged?'Quantité ajoutée à un lot existant ✔':'Ajouté au stock ✔');await catchUp();
 };
 
-async function lookup(code){
- code=String(code).replace(/\D/g,'');if(code.length<8){toast('Code invalide');return}
- toast('Recherche…');
- try{const r=await fetch('https://world.openfoodfacts.org/api/v2/product/'+code+'.json?fields=product_name,product_name_fr,brands,image_front_small_url');
-  const j=await r.json();
-  if(j.status!==1){toast('Produit inconnu : saisissez-le à la main');return}
-  const p=j.product;$('name').value=p.product_name_fr||p.product_name||'';
-  $('brand').value=(p.brands||'').split(',').slice(0,2).join(', ').trim();img=p.image_front_small_url||'';toast('Produit trouvé ✔');
- }catch(e){toast('Hors ligne : saisie manuelle')}
-}
-$('btnOff').onclick=()=>lookup($('code').value);
-$('btnScan').onclick=async()=>{
- const B=P.BarcodeScanner;if(!B){toast('Scanner disponible dans l’appli Android');return}
- try{
-  try{const a=await B.isGoogleBarcodeScannerModuleAvailable();
-   if(!a.available){toast('Installation du module de scan… réessayez dans 30 s');await B.installGoogleBarcodeScannerModule();return}}catch(_){}
-  const r=await B.scan({formats:['EAN_13','EAN_8','UPC_E']});
-  if(r.barcodes&&r.barcodes.length){$('code').value=r.barcodes[0].rawValue;lookup(r.barcodes[0].rawValue)}
- }catch(e){toast('Scan annulé ou impossible')}
-};
+// ---------- Sortie ----------
+const outMsg=(t,c,undo)=>{const e=$('outMsg');e.style.display=t?'block':'none';e.className='msg '+(c||'');e.innerHTML=esc(t||'')+(undo?' <button class="chip" id="undoBtn" style="margin-top:8px">↩︎ Annuler</button>':'');
+ const u=$('undoBtn');if(u)u.onclick=undoLast};
+async function removeOne(id,quiet){
+ const it=S.items.find(i=>i.id===id);if(!it)return;
+ S.log.unshift({t:Date.now(),name:it.name,brand:it.brand,loc:it.loc,type:it.type,date:it.date,img:it.img,barcode:it.barcode});S.log=S.log.slice(0,20);
+ it.qty--;const left=it.qty;if(it.qty<=0)S.items=S.items.filter(i=>i!==it);
+ await save();render();logUI();
+ outMsg('✅ Retiré : '+it.name+' ('+it.type+' '+fmt(it.date)+') — '+(left>0?'il en reste '+left+' dans ce lot':'lot épuisé'),'ok',true);
+ toast('Retiré : '+it.name)}
+async function undoLast(){const l=S.log.shift();if(!l)return;addLot(l,1);await save();render();logUI();outMsg('↩︎ Sortie annulée : '+l.name,'');toast('Sortie annulée')}
+function openPick(lots){$('pickList').innerHTML=lots.map((l,i)=>{const [c,t]=status(l),L=locOf(l.loc);
+ return `<div class="lot ${i===0?'rec':''}"><div><b>${esc(l.name)}</b><div class="pm" style="margin:2px 0">${l.type} ${fmt(l.date)} · ${t}</div><div class="pm" style="margin:0">${L.e} ${esc(L.n)} · ×${l.qty}${i===0?' · <b>recommandé</b>':''}</div></div><button class="btn sec" style="width:auto" data-rm="${l.id}">Retirer 1</button></div>`}).join('');
+ $('pick').showModal()}
+$('pickList').onclick=async e=>{const b=e.target.closest('[data-rm]');if(b){$('pick').close();await removeOne(b.dataset.rm)}};
+function handleRemoveCode(code){code=String(code).replace(/\D/g,'');
+ const lots=S.items.filter(i=>i.barcode===code).sort(byDate);
+ if(!lots.length){outMsg('❌ Ce code-barres n’est pas dans le stock ('+code+').','bad');return}
+ if(lots.length===1)removeOne(lots[0].id);else openPick(lots)}
+$('btnScanOut').onclick=async()=>{const c=await scanBarcode();if(c)handleRemoveCode(c)};
+$('btnOutManual').onclick=()=>{const c=$('codeOut').value.trim();if(c){handleRemoveCode(c);$('codeOut').value=''}};
+function logUI(){$('logList').innerHTML=S.log.length?S.log.slice(0,10).map(l=>{const L=locOf(l.loc),d=new Date(l.t);
+ return `<div class="prod" style="padding:10px"><div class="thumb" style="width:46px;height:46px;font-size:22px">${L.e}</div><div class="pi"><div class="pn" style="font-size:14px">${esc(l.name)}</div><div class="pm" style="margin:2px 0 0">${l.type} ${fmt(l.date)} · retiré le ${p2(d.getDate())}/${p2(d.getMonth()+1)} à ${p2(d.getHours())}:${p2(d.getMinutes())}</div></div></div>`}).join(''):'<div class="empty" style="padding:20px">Aucune sortie pour le moment.</div>'}
 
-// ---- Lecture de la date sur l'emballage (OCR) ----
-let tw=null;
-const loadScript=u=>new Promise((ok,ko)=>{const s=document.createElement('script');s.src=u;s.onload=ok;s.onerror=ko;document.head.appendChild(s)});
-async function ocrWorker(){
- if(tw)return tw;
- if(!window.Tesseract)await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js');
- tw=await Tesseract.createWorker('eng');
- await tw.setParameters({tessedit_char_whitelist:'0123456789/.-: ',tessedit_pageseg_mode:'11'});
- return tw}
-const prep=src=>new Promise((ok,ko)=>{const im=new Image();im.onload=()=>{
- const sc=Math.min(1,1800/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);
- const x=c.getContext('2d');x.drawImage(im,0,0,c.width,c.height);const d=x.getImageData(0,0,c.width,c.height),a=d.data;let mn=255,mx=0;
- for(let i=0;i<a.length;i+=4){const g=a[i]*.3+a[i+1]*.59+a[i+2]*.11;a[i]=g;if(g<mn)mn=g;if(g>mx)mx=g}
- const r=(mx-mn)||1;for(let i=0;i<a.length;i+=4){const g=(a[i]-mn)*255/r;a[i]=a[i+1]=a[i+2]=g}
- x.putImageData(d,0,0);URL.revokeObjectURL(im.src);ok(c)};im.onerror=()=>ko(new Error("image illisible"));im.src=src});
-function findDates(t){const out=[];t=t.replace(/\s+/g,' ');let m;
- const r1=/(?:^|\D)(\d{1,2}) ?[\/.\- ] ?(\d{1,2}) ?[\/.\- ] ?(\d{4}|\d{2})(?!\d)/g;
- while((m=r1.exec(t))){let y=+m[3];if(y<100)y+=2000;const i=mk(y,+m[2],+m[1]);if(i)out.push(i)}
- const r2=/(?:^|\D)(\d{1,2}) ?[\/.\-] ?(\d{4})(?!\d)/g;
- while((m=r2.exec(t))){const y=+m[2],mo=+m[1];if(mo>=1&&mo<=12){const i=mk(y,mo,new Date(y,mo,0).getDate());if(i)out.push(i)}}
+// ---------- Fiche produit ----------
+function openSheet(id){const it=S.items.find(i=>i.id===id);if(!it)return;sheetId=id;const L=locOf(it.loc);
+ $('sThumb').innerHTML=it.img?`<img src="${esc(it.img)}" style="width:100%;height:100%;object-fit:contain;border-radius:14px" alt="">`:L.e;
+ $('sTitle').textContent=it.name;$('sMeta').textContent=(it.barcode?'Code '+it.barcode:'Sans code-barres')+' · '+status(it)[1];
+ $('sName').value=it.name;$('sBrand').value=it.brand||'';$('sLoc').value=it.loc;$('sType').value=it.type;$('sDate').value=fmt(it.date);$('sQty').textContent=it.qty;$('sheet').showModal()}
+$('sMinus').onclick=()=>{const v=Math.max(1,+$('sQty').textContent-1);$('sQty').textContent=v};
+$('sPlus').onclick=()=>{$('sQty').textContent=+$('sQty').textContent+1};
+$('sSave').onclick=async()=>{const it=S.items.find(i=>i.id===sheetId),d=parseFr($('sDate').value),n=$('sName').value.trim();
+ if(!it)return;if(!n||!d){toast('Nom et date valide obligatoires');return}
+ Object.assign(it,{name:n,brand:$('sBrand').value.trim(),loc:$('sLoc').value,type:$('sType').value,date:d,qty:+$('sQty').textContent});
+ await save();render();$('sheet').close();toast('Modifié ✔')};
+$('sOne').onclick=async()=>{$('sheet').close();await removeOne(sheetId)};
+$('sDel').onclick=async()=>{if(!confirm('Supprimer ce lot ?'))return;S.items=S.items.filter(i=>i.id!==sheetId);await save();render();$('sheet').close()};
+$('sClose').onclick=()=>$('sheet').close();
+$('sheet').addEventListener('click',e=>{if(e.target===$('sheet'))$('sheet').close()});
+
+// ---------- Lecture de la date (ML Kit, sur le téléphone) ----------
+const MONTHS={JAN:1,JANV:1,FEV:2,FEB:2,FEVR:2,MAR:3,MARS:3,AVR:4,APR:4,AVRIL:4,MAI:5,MAY:5,JUN:6,JUIN:6,JUL:7,JUIL:7,AOU:8,AUG:8,AOUT:8,SEP:9,SEPT:9,OCT:10,NOV:11,DEC:12};
+const KEY=/AVANT|JUSQU|DLC|DDM|BBE|EXP|USE BY|BEST|CONSOMM|LIMITE|PREFER/;
+function norm(t){return t.toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[|]/g,'1').replace(/(\d)[O](?=[\d\/.\- ]|$)/g,'$10').replace(/([\/.\-: ])O(?=\d)/g,'$10')}
+function datesIn(line){const out=[];let m;
+ const r1=/(?:^|\D)(\d{1,2}) ?[\/.\-] ?(\d{1,2}) ?[\/.\-] ?(\d{4}|\d{2})(?!\d)/g;
+ while((m=r1.exec(line))){let y=+m[3];if(y<100)y+=2000;const i=mk(y,+m[2],+m[1]);if(i)out.push(i)}
+ const r1b=/(?:^|\D)(\d{2}) (\d{2}) (\d{4}|\d{2})(?!\d)/g;
+ while((m=r1b.exec(line))){let y=+m[3];if(y<100)y+=2000;const i=mk(y,+m[2],+m[1]);if(i)out.push(i)}
+ const r2=/(\d{1,2}) ?[\/.\- ]? ?([A-Z]{3,5}) ?[\/.\- ]? ?(\d{4}|\d{2})(?!\d)/g;
+ while((m=r2.exec(line))){const mo=MONTHS[m[2]];if(!mo)continue;let y=+m[3];if(y<100)y+=2000;const i=mk(y,mo,+m[1]);if(i)out.push(i)}
+ if(out.length)return out;
+ const r3=/(?:^|[^A-Z0-9])([A-Z]{3,5}) ?[\/.\- ]? ?(\d{4}|\d{2})(?!\d)/g;
+ while((m=r3.exec(line))){const mo=MONTHS[m[1]];if(!mo)continue;let y=+m[2];if(y<100)y+=2000;const i=mk(y,mo,new Date(y,mo,0).getDate());if(i)out.push(i)}
+ const r4=/(?:^|\D)(\d{1,2}) ?[\/.\-] ?(\d{4})(?!\d)/g;
+ while((m=r4.exec(line))){const mo=+m[1],y=+m[2];if(mo>=1&&mo<=12){const i=mk(y,mo,new Date(y,mo,0).getDate());if(i)out.push(i)}}
  return out}
-const ocrMsg=t=>{const e=$('ocrMsg');e.style.display=t?'block':'none';e.textContent=t||''};
-async function runOcr(src){
- ocrMsg('⏳ Lecture de la date en cours… (la première fois, comptez 20 à 40 s avec Internet)');
- try{const w=await ocrWorker();ocrMsg('⏳ Analyse de la photo…');
-  const c=await prep(src),r=await w.recognize(c),txt=(r.data.text||'').replace(/\s+/g,' ').trim(),ds=findDates(txt);
-  if(!ds.length){ocrMsg('❌ Aucune date trouvée. Texte lu : « '+(txt.slice(0,80)||'rien')+' ». Rapprochez-vous, évitez les reflets, ou saisissez la date à la main.');return}
-  ds.sort();const best=ds[ds.length-1];$('date').value=fmt(best);ocrMsg('✅ Date lue : '+fmt(best)+'. Vérifiez qu’elle est correcte.');
- }catch(err){ocrMsg('❌ Lecture impossible : '+((err&&err.message)||err)+'. Vérifiez la connexion Internet ou saisissez la date à la main.')}
-}
+function readDate(text){
+ const lines=norm(text).split(/\n+/).map(s=>s.trim()).filter(Boolean),all=[],key=[];
+ const lo=daysLeft('2000-01-01')*0+(-400),hi=3000;
+ lines.forEach((ln,ix)=>{const ctx=ln+' '+(lines[ix-1]||'');const ds=datesIn(ln).filter(d=>{const n=daysLeft(d);return n>=lo&&n<=hi});
+  ds.forEach(d=>{all.push(d);if(KEY.test(ctx)&&!/FAB|PACK|EMBAL|PROD/.test(ln))key.push(d)})});
+ const pool=key.length?key:all;if(!pool.length)return null;pool.sort();
+ const full=norm(text);let type=null;
+ if(/PREFEREN|DDM|BEST BEFORE|BBE|AVANT FIN|AVANT LE/.test(full))type='DDM';else if(/JUSQU|DLC|USE BY|DATE LIMITE/.test(full))type='DLC';
+ return{date:pool[pool.length-1],type}}
+
+const ocrMsg=(t,c)=>{const e=$('ocrMsg');e.style.display=t?'block':'none';e.className='msg '+(c||'');e.textContent=t||''};
+let cropImg=null,cropRect=null,view=null,drag=null;
+function drawCrop(){const cv=$('cropCv'),box=cv.parentElement,w=box.clientWidth,h=box.clientHeight;cv.width=w;cv.height=h;
+ const sc=Math.min(w/cropImg.width,h/cropImg.height);view={sc,x:(w-cropImg.width*sc)/2,y:(h-cropImg.height*sc)/2};
+ const x=cv.getContext('2d');x.fillStyle='#000';x.fillRect(0,0,w,h);x.drawImage(cropImg,view.x,view.y,cropImg.width*sc,cropImg.height*sc);
+ if(cropRect){const r=cropRect;x.fillStyle='rgba(0,0,0,.6)';x.fillRect(0,0,w,r.y);x.fillRect(0,r.y+r.h,w,h-r.y-r.h);x.fillRect(0,r.y,r.x,r.h);x.fillRect(r.x+r.w,r.y,w-r.x-r.w,r.h);
+  x.strokeStyle='#3fe08f';x.lineWidth=3;x.strokeRect(r.x,r.y,r.w,r.h)}}
+function openCrop(url){const im=new Image();im.onload=()=>{cropImg=im;cropRect=null;$('crop').style.display='flex';requestAnimationFrame(drawCrop)};im.onerror=()=>ocrMsg('Photo illisible, réessayez.','bad');im.src=url}
+(()=>{const cv=$('cropCv'),pt=e=>{const b=cv.getBoundingClientRect();return{x:e.clientX-b.left,y:e.clientY-b.top}};
+ cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);drag=pt(e);cropRect={x:drag.x,y:drag.y,w:0,h:0};drawCrop()});
+ cv.addEventListener('pointermove',e=>{if(!drag)return;const p=pt(e);cropRect={x:Math.min(drag.x,p.x),y:Math.min(drag.y,p.y),w:Math.abs(p.x-drag.x),h:Math.abs(p.y-drag.y)};drawCrop()});
+ const end=()=>{drag=null;if(cropRect&&(cropRect.w<20||cropRect.h<20)){cropRect=null;drawCrop()}};
+ cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end)})();
+function variant(src,mode){const c=document.createElement('canvas');c.width=src.width;c.height=src.height;const x=c.getContext('2d');x.drawImage(src,0,0);
+ if(mode==='plain')return c;const d=x.getImageData(0,0,c.width,c.height),a=d.data;let mn=255,mx=0;
+ for(let i=0;i<a.length;i+=4){const g=a[i]*.3+a[i+1]*.59+a[i+2]*.11;a[i]=g;if(g<mn)mn=g;if(g>mx)mx=g}
+ const r=(mx-mn)||1;for(let i=0;i<a.length;i+=4){let g=(a[i]-mn)*255/r;if(mode==='inv')g=255-g;a[i]=a[i+1]=a[i+2]=g}
+ x.putImageData(d,0,0);return c}
+async function mlText(c){const T=P.CapacitorPluginMlKitTextRecognition;const b=c.toDataURL('image/jpeg',.92).split(',')[1];const r=await T.detectText({base64Image:b});return r.text||''}
+async function runOcr(){
+ $('crop').style.display='none';
+ const T=P.CapacitorPluginMlKitTextRecognition;if(!T){ocrMsg('La lecture de date fonctionne dans l’appli Android.','bad');return}
+ ocrMsg('⏳ Lecture de la date en cours…','warn');
+ try{let sx=0,sy=0,sw=cropImg.width,sh=cropImg.height;
+  if(cropRect&&cropRect.w>=20){sx=Math.max(0,(cropRect.x-view.x)/view.sc);sy=Math.max(0,(cropRect.y-view.y)/view.sc);sw=Math.min(cropImg.width-sx,cropRect.w/view.sc);sh=Math.min(cropImg.height-sy,cropRect.h/view.sc)}
+  const k=Math.min(3,Math.max(.4,1400/Math.max(sw,sh))),c=document.createElement('canvas');c.width=Math.round(sw*k);c.height=Math.round(sh*k);
+  c.getContext('2d').drawImage(cropImg,sx,sy,sw,sh,0,0,c.width,c.height);
+  let seen='',res=null;
+  for(const m of['plain','contrast','inv']){const t=await mlText(variant(c,m));seen+=t+'\n';res=readDate(seen);if(res)break}
+  if(!res){ocrMsg('❌ Date non reconnue. Texte lu : « '+(seen.replace(/\s+/g,' ').trim().slice(0,90)||'rien')+' ». Réessayez en entourant seulement la date, de près et sans reflet, ou tapez-la.','bad');return}
+  $('date').value=fmt(res.date);
+  if(res.type){setType(res.type,'Type lu sur l’emballage : '+res.type)}
+  ocrMsg('✅ Date lue : '+fmt(res.date)+(res.type?' ('+res.type+')':'')+'. Vérifiez qu’elle est correcte.','ok');
+ }catch(err){ocrMsg('❌ Lecture impossible : '+((err&&err.message)||err)+'. Tapez la date à la main.','bad')}}
 $('btnOcr').onclick=async()=>{
  ocrMsg('');const C=P.Camera;
- if(C){try{const ph=await C.getPhoto({source:'CAMERA',resultType:'dataUrl',quality:85,correctOrientation:true});await runOcr(ph.dataUrl)}
-  catch(e){ocrMsg('Photo annulée ou caméra non autorisée : '+((e&&e.message)||e))}}
- else $('ocrFile').click()};
-$('ocrFile').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(f)await runOcr(URL.createObjectURL(f))};
+ if(!C){ocrMsg('La photo fonctionne dans l’appli Android.','bad');return}
+ try{const ph=await C.getPhoto({source:'CAMERA',resultType:'dataUrl',quality:90,correctOrientation:true});openCrop(ph.dataUrl)}
+ catch(e){ocrMsg('Photo annulée ou caméra non autorisée.','bad')}};
+$('cropOk').onclick=runOcr;$('cropX').onclick=()=>{$('crop').style.display='none'};
+window.addEventListener('resize',()=>{if(cropImg&&$('crop').style.display==='flex')drawCrop()});
 
-// ---- Rappels programmés ----
+// ---------- Rappels programmés ----------
 async function resched(){
  const L=P.LocalNotifications;if(!L)return 0;
  try{
@@ -293,7 +511,6 @@ async function resched(){
   return list.length;
  }catch(e){return 0}
 }
-// Alerte immédiate pour les produits déjà périmés ou à consommer aujourd'hui (1 fois par jour et par produit)
 async function catchUp(){
  const L=P.LocalNotifications;if(!L)return;
  try{const k=isoToday(),due=S.items.filter(i=>daysLeft(i.date)<=0&&!S.alerted[i.id+'|'+k]);
@@ -311,10 +528,10 @@ async function permUI(){
  const L=P.LocalNotifications;let a='Non disponible (ouvrez l’appli Android)',b='',n=0;
  if(L){
   try{const r=await L.checkPermissions();a=r.display==='granted'?'✅ Notifications autorisées':r.display==='denied'?'⛔ Refusées (voir Paramètres Android)':'🔕 Pas encore autorisées'}catch(e){}
-  try{const x=await L.checkExactNotificationSetting();b=x.exact_alarm==='granted'?'✅ Alarmes précises autorisées':'⚠️ Alarmes précises non autorisées (touchez « 2 »)'}catch(e){b='Alarmes précises : non applicable'}
+  try{const x=await L.checkExactNotificationSetting();b=x.exact_alarm==='granted'?'✅ Alarmes précises autorisées':'⚠️ Alarmes précises non autorisées (touchez « 2 »)'}catch(e){b='Alarmes précises : sans objet sur ce téléphone'}
   try{n=(await L.getPending()).notifications.length}catch(e){}
  }
- $('permState').innerHTML=a+'<br>'+b+'<br>⏰ '+n+' rappel'+(n>1?'s':'')+' programmé'+(n>1?'s':'');
+ $('permState').innerHTML=esc(a)+'<br>'+esc(b)+'<br>⏰ '+n+' rappel'+(n>1?'s':'')+' programmé'+(n>1?'s':'');
 }
 $('btnPerm').onclick=async()=>{if(P.LocalNotifications){await P.LocalNotifications.requestPermissions();await resched()}permUI()};
 $('btnExact').onclick=async()=>{const L=P.LocalNotifications;if(!L)return;try{await L.changeExactNotificationSetting()}catch(e){toast('Réglage non nécessaire sur ce téléphone')}setTimeout(permUI,1500)};
@@ -322,30 +539,35 @@ $('btnTest').onclick=async()=>{const L=P.LocalNotifications;if(!L){toast('Test p
  const r=await L.requestPermissions();permUI();if(r.display!=='granted'){toast('Notifications refusées');return}
  await L.schedule({notifications:[{id:1,title:'Test d’alerte',body:'Les notifications fonctionnent ✔',schedule:{at:new Date(Date.now()+5000),allowWhileIdle:true}}]});toast('Alerte dans 5 secondes…')};
 
-// ---- Réglages ----
+// ---------- Réglages ----------
 const STD=[30,15,7,3,2,1,0];
 function dayUI(){const all=[...new Set([...STD,...S.days])].sort((a,b)=>b-a);
  $('dayList').innerHTML=all.map(d=>`<label class="chk"><input type="checkbox" data-d="${d}" ${S.days.includes(d)?'checked':''}><span>${d===0?'Le jour même':d===1?'1 jour avant':d+' jours avant'}</span></label>`).join('');
- $('hour').value=S.hour;$('soon').value=S.soon;$('rows').value=S.rows;$('bk').value=S.backup}
-function locUI(){$('locList').innerHTML=S.locs.map(l=>`<div class="locrow"><input value="${esc(l.e)}" maxlength="4" data-id="${esc(l.id)}" data-k="e"><input value="${esc(l.n)}" data-id="${esc(l.id)}" data-k="n"><button class="sec" data-ld="${esc(l.id)}">🗑️</button></div>`).join('')}
+ $('hour').value=S.hour;$('soon').value=S.soon;$('bk').value=S.backup}
+function locUI(){$('locList').innerHTML=S.locs.map(l=>`<div class="locrow"><button class="ibtn" data-ic="${esc(l.id)}">${esc(l.e)}</button><input class="g" value="${esc(l.n)}" data-id="${esc(l.id)}"><button class="btn sec" style="width:auto" data-ld="${esc(l.id)}">🗑️</button></div>`).join('')}
 $('dayList').onchange=async e=>{const d=+e.target.dataset.d;if(isNaN(d))return;
  S.days=e.target.checked?[...new Set([...S.days,d])]:S.days.filter(x=>x!==d);await save();dayUI();render();permUI()};
-$('addDay').onclick=async()=>{const v=parseInt($('extraDay').value);if(isNaN(v)||v<0)return;if(!S.days.includes(v))S.days.push(v);$('extraDay').value='';await save();dayUI();render();permUI()};
-$('hour').onchange=async()=>{if($('hour').value){S.hour=$('hour').value;await save();render();permUI()}};
+$('addDay').onclick=async()=>{const v=parseInt($('extraDay').value);if(isNaN(v)||v<0)return;if(!S.days.includes(v))S.days.push(v);$('extraDay').value='';await save();dayUI();permUI()};
+$('hour').onchange=async()=>{if($('hour').value){S.hour=$('hour').value;await save();permUI()}};
 $('soon').onchange=async()=>{S.soon=Math.max(1,parseInt($('soon').value)||7);await persist();render()};
-$('rows').onchange=async()=>{S.rows=+$('rows').value;await persist();render()};
 $('bk').onchange=async()=>{S.backup=$('bk').value;await persist();render()};
-$('locList').onchange=async e=>{const t=e.target,l=S.locs.find(x=>x.id===t.dataset.id);if(!l)return;
- const v=t.value.trim();if(t.dataset.k==='n'&&!v){t.value=l.n;return}l[t.dataset.k]=v||'📦';await persist();fillSel();render()};
-$('locList').onclick=async e=>{const id=e.target.dataset.ld;if(!id)return;
- if(S.items.some(i=>i.loc===id)){toast('Déplacez ou supprimez d’abord les produits de cet emplacement');return}
+const EMO=['❄️','🧊','📦','🥶','🍎','🥛','🧀','🥩','🐟','🥦','🍞','🥫','🍷','🍺','🧃','🍫','🍪','🥚','🧈','🍝','🍚','🫒','🧂','🥡','🍕','🍦','🏠','🛒','🧺','🗄️','🚪','🍽️','☕','🍯','🥜','🧁'];
+let iconCb=null;$('igrid').innerHTML=EMO.map(e=>`<button data-e="${e}">${e}</button>`).join('');
+const pickIcon=cb=>{iconCb=cb;$('iconDlg').showModal()};
+$('igrid').onclick=e=>{const b=e.target.closest('[data-e]');if(b&&iconCb){iconCb(b.dataset.e);$('iconDlg').close()}};
+let newIcon='📦';
+$('newE').onclick=()=>pickIcon(e=>{newIcon=e;$('newE').textContent=e});
+$('locList').onclick=async e=>{
+ const ic=e.target.closest('[data-ic]');
+ if(ic){pickIcon(async em=>{const l=S.locs.find(x=>x.id===ic.dataset.ic);if(l){l.e=em;await persist();locUI();fillLocChips();render()}});return}
+ const id=e.target.closest('[data-ld]');if(!id)return;const lid=id.dataset.ld;
+ if(S.items.some(i=>i.loc===lid)){toast('Déplacez ou supprimez d’abord les produits de cet emplacement');return}
  if(S.locs.length<2){toast('Gardez au moins un emplacement');return}
- if(!confirm('Supprimer cet emplacement ?'))return;S.locs=S.locs.filter(l=>l.id!==id);if(lf===id)lf='all';await persist();locUI();fillSel();render()};
-$('addLoc').onclick=async()=>{const n=$('newN').value.trim();if(!n)return;S.locs.push({id:'l'+Date.now().toString(36),e:$('newE').value.trim()||'📦',n});$('newN').value='';$('newE').value='';await persist();locUI();fillSel();render()};
-$('btnSet').onclick=()=>{dayUI();locUI();permUI();$('dlg').showModal()};
-$('dlg').addEventListener('click',e=>{if(e.target===$('dlg'))$('dlg').close()});
+ if(!confirm('Supprimer cet emplacement ?'))return;S.locs=S.locs.filter(l=>l.id!==lid);if(lf===lid)lf='all';if(curLoc===lid)curLoc=S.locs[0].id;await persist();locUI();fillLocChips();render()};
+$('locList').onchange=async e=>{const l=S.locs.find(x=>x.id===e.target.dataset.id);if(!l)return;const v=e.target.value.trim();if(!v){e.target.value=l.n;return}l.n=v;await persist();fillLocChips();render()};
+$('addLoc').onclick=async()=>{const n=$('newN').value.trim();if(!n)return;S.locs.push({id:'l'+Date.now().toString(36),e:newIcon,n});$('newN').value='';newIcon='📦';$('newE').textContent='📦';await persist();locUI();fillLocChips();render()};
 
-// ---- Sauvegarde (fichier → Drive via le menu Partager) ----
+// ---------- Sauvegarde ----------
 async function backupNow(){
  const data=JSON.stringify(S,null,1),F=P.Filesystem,Sh=P.Share;
  if(F&&Sh){try{const w=await F.writeFile({path:'stock-dlc-sauvegarde.json',data,directory:'CACHE',encoding:'utf8'});
@@ -356,10 +578,10 @@ async function backupNow(){
 $('btnBk').onclick=backupNow;$('banner').onclick=backupNow;
 $('btnRs').onclick=()=>$('fileIn').click();
 $('fileIn').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
- try{const j=JSON.parse(await f.text());if(!Array.isArray(j.items))throw 0;S=Object.assign(S,j);await save();dayUI();locUI();fillSel();render();toast('Restauré ✔')}catch(_){toast('Fichier de sauvegarde invalide')}};
+ try{const j=JSON.parse(await f.text());if(!Array.isArray(j.items))throw 0;S=Object.assign(S,j);await save();fillLocChips();dayUI();locUI();render();toast('Restauré ✔')}catch(_){toast('Fichier de sauvegarde invalide')}};
 
 document.addEventListener('visibilitychange',async()=>{if(!document.hidden){render();await catchUp()}});
-(async()=>{await load();fillSel();render();
+(async()=>{await load();fillLocChips();render();setType('DLC','');
  if(P.LocalNotifications){try{const r=await P.LocalNotifications.checkPermissions();if(r.display==='prompt'||r.display==='prompt-with-rationale')await P.LocalNotifications.requestPermissions()}catch(e){}}
  await resched();await catchUp()})();
 </script>
