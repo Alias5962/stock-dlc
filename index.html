@@ -93,6 +93,7 @@ h3{margin:18px 0 4px;font-size:16px}h3:first-child{margin-top:0}
  </div>
  <small class="help" style="display:block;margin-top:6px">Tapez les chiffres : les « / » s’ajoutent seuls. Le bouton 📅 lit la date sur l’emballage avec l’appareil photo.</small>
  <input type="file" id="ocrFile" accept="image/*" capture="environment" hidden>
+ <div class="status" id="ocrMsg" style="display:none"></div>
  <label>Quantité</label>
  <input id="qtyIn" type="number" min="1" value="1" inputmode="numeric">
  <button class="pri" id="btnAdd">＋ Ajouter au stock</button>
@@ -246,25 +247,33 @@ async function ocrWorker(){
  tw=await Tesseract.createWorker('eng');
  await tw.setParameters({tessedit_char_whitelist:'0123456789/.-: ',tessedit_pageseg_mode:'11'});
  return tw}
-const prep=f=>new Promise((ok,ko)=>{const im=new Image();im.onload=()=>{
+const prep=src=>new Promise((ok,ko)=>{const im=new Image();im.onload=()=>{
  const sc=Math.min(1,1800/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);
  const x=c.getContext('2d');x.drawImage(im,0,0,c.width,c.height);const d=x.getImageData(0,0,c.width,c.height),a=d.data;let mn=255,mx=0;
  for(let i=0;i<a.length;i+=4){const g=a[i]*.3+a[i+1]*.59+a[i+2]*.11;a[i]=g;if(g<mn)mn=g;if(g>mx)mx=g}
  const r=(mx-mn)||1;for(let i=0;i<a.length;i+=4){const g=(a[i]-mn)*255/r;a[i]=a[i+1]=a[i+2]=g}
- x.putImageData(d,0,0);URL.revokeObjectURL(im.src);ok(c)};im.onerror=ko;im.src=URL.createObjectURL(f)});
+ x.putImageData(d,0,0);URL.revokeObjectURL(im.src);ok(c)};im.onerror=()=>ko(new Error("image illisible"));im.src=src});
 function findDates(t){const out=[];t=t.replace(/\s+/g,' ');let m;
  const r1=/(?:^|\D)(\d{1,2}) ?[\/.\- ] ?(\d{1,2}) ?[\/.\- ] ?(\d{4}|\d{2})(?!\d)/g;
  while((m=r1.exec(t))){let y=+m[3];if(y<100)y+=2000;const i=mk(y,+m[2],+m[1]);if(i)out.push(i)}
  const r2=/(?:^|\D)(\d{1,2}) ?[\/.\-] ?(\d{4})(?!\d)/g;
  while((m=r2.exec(t))){const y=+m[2],mo=+m[1];if(mo>=1&&mo<=12){const i=mk(y,mo,new Date(y,mo,0).getDate());if(i)out.push(i)}}
  return out}
-$('btnOcr').onclick=()=>$('ocrFile').click();
-$('ocrFile').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
- toast('Lecture de la date… (connexion requise la 1ʳᵉ fois)');
- try{const w=await ocrWorker(),c=await prep(f),r=await w.recognize(c),ds=findDates(r.data.text||'');
-  if(!ds.length){toast('Date non reconnue : saisissez-la à la main');return}
-  ds.sort();const best=ds[ds.length-1];$('date').value=fmt(best);toast('Date lue : '+fmt(best)+' — vérifiez-la');
- }catch(err){toast('Lecture impossible (connexion ?) : saisie manuelle')}};
+const ocrMsg=t=>{const e=$('ocrMsg');e.style.display=t?'block':'none';e.textContent=t||''};
+async function runOcr(src){
+ ocrMsg('⏳ Lecture de la date en cours… (la première fois, comptez 20 à 40 s avec Internet)');
+ try{const w=await ocrWorker();ocrMsg('⏳ Analyse de la photo…');
+  const c=await prep(src),r=await w.recognize(c),txt=(r.data.text||'').replace(/\s+/g,' ').trim(),ds=findDates(txt);
+  if(!ds.length){ocrMsg('❌ Aucune date trouvée. Texte lu : « '+(txt.slice(0,80)||'rien')+' ». Rapprochez-vous, évitez les reflets, ou saisissez la date à la main.');return}
+  ds.sort();const best=ds[ds.length-1];$('date').value=fmt(best);ocrMsg('✅ Date lue : '+fmt(best)+'. Vérifiez qu’elle est correcte.');
+ }catch(err){ocrMsg('❌ Lecture impossible : '+((err&&err.message)||err)+'. Vérifiez la connexion Internet ou saisissez la date à la main.')}
+}
+$('btnOcr').onclick=async()=>{
+ ocrMsg('');const C=P.Camera;
+ if(C){try{const ph=await C.getPhoto({source:'CAMERA',resultType:'dataUrl',quality:85,correctOrientation:true});await runOcr(ph.dataUrl)}
+  catch(e){ocrMsg('Photo annulée ou caméra non autorisée : '+((e&&e.message)||e))}}
+ else $('ocrFile').click()};
+$('ocrFile').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(f)await runOcr(URL.createObjectURL(f))};
 
 // ---- Rappels programmés ----
 async function resched(){
