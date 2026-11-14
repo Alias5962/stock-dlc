@@ -1,5 +1,10 @@
 {
   "appId": "fr.alias.stockdlc",
-  "appName": "Stock DLC",
-  "webDir": "www"
+  "appName": "Gestion des stocks alimentaires",
+  "webDir": "www",
+  "plugins": {
+    "CapacitorHttp": {
+      "enabled": true
+    }
+  }
 }

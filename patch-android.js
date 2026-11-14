@@ -34,7 +34,7 @@ if (fs.existsSync(ks) && !g.includes('stock-dlc-signing')) {
     '        }\n    }\n');
 }
 g = g.replace(/versionCode \d+/, 'versionCode ' + (parseInt(process.env.GITHUB_RUN_NUMBER, 10) || 1));
-g = g.replace(/versionName "[^"]*"/, 'versionName "3.0"');
+g = g.replace(/versionName "[^"]*"/, 'versionName "3.1"');
 wr(gp, g);
 
 // 3. Icône de l'application

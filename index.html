@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f7a54">
-<title>Stock DLC / DDM</title>
+<title>Gestion des stocks alimentaires</title>
 <style>
 :root{--bg:#f3f5f7;--card:#fff;--tx:#14201a;--mut:#68766f;--line:#e5eaee;--pri:#0f7a54;--pri-d:#0b5f42;--pri2:#e4f4ec;--ok:#0f7a54;--okbg:#e4f4ec;--warn:#b86e00;--warnbg:#fff0d4;--bad:#c93232;--badbg:#fde6e6;--inp:#f6f8fa;--sh:0 1px 2px rgba(16,24,40,.06),0 6px 16px rgba(16,24,40,.05)}
 @media (prefers-color-scheme:dark){:root{--bg:#0e1411;--card:#18211c;--tx:#eaf2ed;--mut:#93a39a;--line:#26322b;--pri:#3fb27f;--pri-d:#2f9468;--pri2:#1c3a2c;--ok:#4cc38a;--okbg:#17352a;--warn:#f0b04a;--warnbg:#3a2c10;--bad:#ff7b7b;--badbg:#3d1c1c;--inp:#121a16;--sh:none}}
@@ -87,6 +87,22 @@ dialog.mid{width:min(92vw,420px);border-radius:22px;padding:18px;max-height:85vh
 #crop .bar button{flex:1}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(90px + env(safe-area-inset-bottom));background:#14201a;color:#fff;padding:11px 18px;border-radius:14px;font-size:14px;z-index:99;opacity:0;transition:.25s;pointer-events:none;max-width:90vw;text-align:center;box-shadow:0 8px 24px #0005}
 .toast.on{opacity:1}
+.swipe{position:relative;margin-bottom:10px;border-radius:18px;overflow:hidden;background:var(--bad)}
+.swipe .swbg{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;padding:0 22px;color:#fff;font-weight:700;font-size:15px}
+.swipe .prod{position:relative;margin-bottom:0;touch-action:pan-y;transition:transform .2s;will-change:transform}
+.swipe .prod.drag{transition:none}
+.ghead{font-size:13px;font-weight:800;color:var(--mut);margin:16px 2px 8px;letter-spacing:.03em;text-transform:uppercase}
+.thumb[data-zoom]{cursor:zoom-in}
+dialog#lb{padding:0;border:0;background:rgba(0,0,0,.95);width:100vw;height:100vh;max-width:none;max-height:none;margin:0;opacity:0;transition:opacity .22s}
+dialog#lb.on{opacity:1}
+#lbs{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+#lbs img{width:94%;max-height:78%;object-fit:contain;background:#fff;border-radius:14px;transform:scale(.55);transition:transform .26s ease;cursor:zoom-out}
+dialog#lb.on #lbs img{transform:scale(1)}
+#lbx{position:absolute;top:calc(12px + env(safe-area-inset-top));right:14px;z-index:2;width:46px;height:46px;border-radius:50%;background:#fff3;color:#fff;font-size:22px;padding:0}
+#lbh{position:absolute;bottom:calc(18px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;color:#ccc;font-size:13px;pointer-events:none}
+.toast.act{pointer-events:auto}
+.toast .tb{margin-left:12px;background:#ffffff33;color:#fff;padding:6px 12px;border-radius:10px;font-size:13px}
+.toolbar .tsel{display:flex;gap:6px}.toolbar .tsel select{max-width:150px}
 </style>
 </head>
 <body>
@@ -94,7 +110,7 @@ dialog.mid{width:min(92vw,420px);border-radius:22px;padding:18px;max-height:85vh
 
 <!-- ============ STOCK ============ -->
 <section class="screen on" id="s-stock">
- <h1>Mon stock</h1><p class="subt" id="subt"></p>
+ <h1 style="font-size:23px;line-height:1.2">Gestion des stocks alimentaires</h1><p class="subt" id="subt"></p>
  <button class="banner" id="banner" style="display:none"></button>
  <div class="search"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="q" type="search" placeholder="Rechercher un produit, une marque, un code…" autocomplete="off"></div>
  <div class="seg" id="seg">
@@ -104,7 +120,7 @@ dialog.mid{width:min(92vw,420px);border-radius:22px;padding:18px;max-height:85vh
  </div>
  <div class="chips" id="chips"></div>
  <div class="toolbar"><span id="count"></span>
-  <select id="sort"><option value="date">Date la plus proche</option><option value="name">Nom A→Z</option><option value="new">Ajouts récents</option></select></div>
+  <span class="tsel"><select id="catSel"></select><select id="sort"><option value="date">Date la plus proche</option><option value="cat">Par catégorie</option><option value="name">Nom A→Z</option><option value="new">Ajouts récents</option></select></span></div>
  <div id="list"></div>
 </section>
 
@@ -118,6 +134,7 @@ dialog.mid{width:min(92vw,420px);border-radius:22px;padding:18px;max-height:85vh
   <div id="inStock" class="msg warn" style="display:none"></div>
   <div class="row" style="margin-top:14px;align-items:center"><div id="pthumb" class="thumb">🛒</div><div class="g"><label class="lbl" style="margin-top:0">Nom du produit *</label><input id="name" placeholder="Ex : Yaourt nature"></div></div>
   <label class="lbl">Marque</label><input id="brand" placeholder="Ex : Danone">
+  <label class="lbl">Catégorie</label><select id="cat"></select>
   <label class="lbl">Emplacement *</label><div class="chips" id="locChips"></div>
   <label class="lbl">Type de date</label>
   <div class="seg two" id="typeSeg"><button class="stat on" data-t="DLC"><b style="font-size:17px">DLC</b>À consommer jusqu’au</button><button class="stat" data-t="DDM"><b style="font-size:17px">DDM</b>De préférence avant</button></div>
@@ -173,14 +190,27 @@ dialog.mid{width:min(92vw,420px);border-radius:22px;padding:18px;max-height:85vh
   <div class="locrow"><button class="ibtn" id="newE">📦</button><input class="g" id="newN" placeholder="Nouvel emplacement"><button class="btn sec" id="addLoc" style="width:auto">Ajouter</button></div>
  </div>
  <div class="card">
-  <h2 style="font-size:17px;margin:0 0 4px">💾 Enregistrement des données</h2>
-  <p class="hint" style="margin:0 0 10px">Les données sont toujours enregistrées sur le téléphone. Vous pouvez aussi les sauvegarder sur Google Drive.</p>
-  <select id="bk"><option value="local">Téléphone seulement</option><option value="both">Téléphone + Google Drive</option></select>
-  <div class="row" style="margin-top:10px"><button class="btn sec g" id="btnBk">Sauvegarder</button><button class="btn sec g" id="btnRs">Restaurer</button></div>
-  <input type="file" id="fileIn" accept=".json,application/json" hidden>
-  <p class="hint">« Sauvegarder » ouvre le menu de partage : choisissez Drive ou « Enregistrer dans les fichiers ».</p>
+  <h2 style="font-size:17px;margin:0 0 4px">🗂️ Catégories de produits</h2>
+  <p class="hint" style="margin:0 0 10px">Touchez l’icône pour la changer, modifiez le nom, ou ajoutez une catégorie.</p>
+  <div id="catList"></div>
+  <div class="locrow"><button class="ibtn" id="newCE">🏷️</button><input class="g" id="newCN" placeholder="Nouvelle catégorie"><button class="btn sec" id="addCat" style="width:auto">Ajouter</button></div>
  </div>
- <p class="hint" style="text-align:center">Stock DLC / DDM · version 3.0</p>
+ <div class="card">
+  <h2 style="font-size:17px;margin:0 0 4px">💾 Enregistrement des données</h2>
+  <p class="hint" style="margin:0 0 10px">Les données sont toujours enregistrées sur le téléphone. Vous pouvez aussi les envoyer automatiquement sur Google Drive.</p>
+  <select id="bk"><option value="local">Téléphone seulement</option><option value="both">Téléphone + Google Drive (automatique)</option></select>
+  <div id="driveBox" style="display:none">
+   <label class="lbl">Adresse du script Google</label><input id="driveUrl" placeholder="https://script.google.com/macros/s/…/exec" autocapitalize="off" autocorrect="off" spellcheck="false">
+   <label class="lbl">Clé secrète (la même que dans le script)</label><input id="driveKey" placeholder="Votre mot de passe" autocapitalize="off" autocomplete="off" spellcheck="false">
+   <label class="chk" style="border:0"><input type="checkbox" id="autoSync"><span>Synchroniser à chaque modification</span></label>
+   <div class="status" id="syncState"></div>
+   <div class="row"><button class="btn sec g" id="btnSync">Synchroniser</button><button class="btn sec g" id="btnPull">Restaurer depuis Drive</button></div>
+  </div>
+  <label class="lbl" style="margin-top:16px">Sauvegarde manuelle (fichier)</label>
+  <div class="row"><button class="btn out g" id="btnBk">Sauvegarder</button><button class="btn out g" id="btnRs">Restaurer</button></div>
+  <input type="file" id="fileIn" accept=".json,application/json" hidden>
+ </div>
+ <p class="hint" style="text-align:center">Gestion des stocks alimentaires · version 3.1</p>
 </section>
 </main>
 
@@ -198,6 +228,7 @@ dialog.mid{width:min(92vw,420px);border-radius:22px;padding:18px;max-height:85vh
  <label class="lbl">Nom</label><input id="sName">
  <label class="lbl">Marque</label><input id="sBrand">
  <label class="lbl">Emplacement</label><select id="sLoc"></select>
+ <label class="lbl">Catégorie</label><select id="sCat"></select>
  <label class="lbl">Type de date</label>
  <select id="sType"><option value="DLC">DLC – consommer jusqu’au</option><option value="DDM">DDM – de préférence avant</option></select>
  <label class="lbl">Date (JJ/MM/AAAA)</label><input id="sDate" class="dateIn" inputmode="numeric" maxlength="10" placeholder="JJ/MM/AAAA">
@@ -229,27 +260,42 @@ dialog.mid{width:min(92vw,420px);border-radius:22px;padding:18px;max-height:85vh
  <div class="box"><canvas id="cropCv"></canvas></div>
  <div class="bar"><button class="btn out" id="cropX" style="width:auto;flex:none">Annuler</button><button class="btn" id="cropOk">Lire la date</button></div>
 </div>
+<dialog id="lb"><button id="lbx" aria-label="Fermer">✕</button><div id="lbs"><img id="lbImg" alt=""></div><div id="lbh">Touchez la photo pour revenir</div></dialog>
 <div class="toast" id="toast"></div>
 
 <script>
 const $=id=>document.getElementById(id);
 const P=(window.Capacitor&&window.Capacitor.Plugins)||{};
 const p2=n=>String(n).padStart(2,'0');
-const DEF={items:[],days:[30,15,7,3,1,0],hour:'09:00',soon:7,backup:'local',lastBackup:0,alerted:{},known:{},log:[],
+const DEF={items:[],days:[30,15,7,3,1,0],hour:'09:00',soon:7,backup:'local',lastBackup:0,alerted:{},known:{},log:[],updated:0,driveUrl:'',driveKey:'',autoSync:true,lastSync:0,
+ cats:[{id:'frais',e:'🥗',n:'Frais'},{id:'yaourts',e:'🥛',n:'Yaourts & laitages'},{id:'fromages',e:'🧀',n:'Fromages'},{id:'viandes',e:'🥩',n:'Viandes & poissons'},{id:'traiteur',e:'🍖',n:'Charcuterie & traiteur'},{id:'fruits',e:'🍎',n:'Fruits & légumes'},{id:'surgeles',e:'🧊',n:'Surgelés'},{id:'boissons',e:'🧃',n:'Boissons'},{id:'biscuits',e:'🍪',n:'Biscuits & gâteaux'},{id:'sucre',e:'🍫',n:'Chocolats & confiseries'},{id:'petitdej',e:'🥣',n:'Petit-déjeuner'},{id:'epicerie',e:'🥫',n:'Épicerie'},{id:'autre',e:'📦',n:'Autre'}],
  locs:[{id:'frigo',e:'❄️',n:'Frigo'},{id:'congel',e:'🧊',n:'Congélateur'},{id:'garde',e:'📦',n:'Garde-manger'}]};
-let S=JSON.parse(JSON.stringify(DEF)),lf='all',sf='all',img='',curType='DLC',curLoc='frigo',qty=1,sheetId=null;
+let S=JSON.parse(JSON.stringify(DEF)),lf='all',sf='all',img='',imgBig='',curType='DLC',curLoc='frigo',qty=1,sheetId=null;
 const locOf=id=>S.locs.find(l=>l.id===id)||{e:'📦',n:id||'?'};
+const catOf=id=>S.cats.find(c=>c.id===id)||S.cats.find(c=>c.id==='autre')||{e:'📦',n:'Autre'};
+function guessCat(t){t=(t||'').toLowerCase();
+ const R=[['surgeles',/frozen|surgel|ice-cream|sorbet|glace/],['yaourts',/yogurt|yoghurt|yaourt|dairy-dessert|fromage-blanc|skyr|petit-suisse|milk|\blait\b|beurre|butter|cream|creme|dessert/],['fromages',/cheese|fromage|emmental|camembert|mozzarella|raclette/],
+ ['viandes',/meat|poultry|beef|pork|veal|lamb|fish|seafood|salmon|viande|poisson|poulet|steak|saumon|thon\b/],['traiteur',/charcut|\bham\b|jambon|sausage|saucisse|delicatessen|ready-meal|prepared|traiteur|sandwich|pizza|quiche|lardon|rillette/],
+ ['fruits',/fruit|vegetable|legume|salad|salade|tomate|carotte|pomme\b/],['boissons',/beverage|drink|water|\beau\b|juice|\bjus\b|soda|wine|\bvin\b|beer|biere|sirop|boisson/],
+ ['biscuits',/biscuit|cookie|cake|gateau|pastr|viennois|gaufre|wafer|cereal-bar|barre|brioche|madeleine|sabl/],['sucre',/chocolate|chocolat|confectioner|sweet|bonbon|confiture|\bjam\b|miel|honey|nutella|spread/],
+ ['petitdej',/breakfast|cereal|muesli|granola|corn-flakes|cafe\b|coffee|\btea\b/],['epicerie',/pasta|\bpates\b|\briz\b|rice|canned|conserve|flour|farine|sauce|condiment|\boil\b|huile|spice|epice|soup|soupe|lentil|bean|sugar/],
+ ['frais',/fresh|chilled|frais/]];
+ for(const[id,re]of R)if(re.test(t)&&S.cats.some(c=>c.id===id))return id;return'autre'}
 
 async function load(){
  try{let v;if(P.Preferences)v=(await P.Preferences.get({key:'stockdlc'})).value;else v=localStorage.getItem('stockdlc');
   if(v)S=Object.assign(S,JSON.parse(v))}catch(e){}
  if(!Array.isArray(S.locs)||!S.locs.length)S.locs=JSON.parse(JSON.stringify(DEF.locs));
  S.known=S.known||{};S.log=S.log||[];S.alerted=S.alerted||{};
+ if(!Array.isArray(S.cats)||!S.cats.length)S.cats=JSON.parse(JSON.stringify(DEF.cats));
+ S.items.forEach(i=>{if(!i.cat)i.cat=guessCat(i.name)});
  if(!S.locs.some(l=>l.id===curLoc))curLoc=S.locs[0].id;
 }
-async function persist(){const v=JSON.stringify(S);try{if(P.Preferences)await P.Preferences.set({key:'stockdlc',value:v});else localStorage.setItem('stockdlc',v)}catch(e){}}
+async function persist(noSync){if(!noSync)S.updated=Date.now();const v=JSON.stringify(S);try{if(P.Preferences)await P.Preferences.set({key:'stockdlc',value:v});else localStorage.setItem('stockdlc',v)}catch(e){}if(!noSync)queuePush()}
 async function save(){await persist();await resched()}
-const toast=t=>{const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),3200)};
+const toast=(t,label,fn)=>{const e=$('toast');e.textContent=t;e.classList.toggle('act',!!fn);
+ if(fn){const b=document.createElement('button');b.className='tb';b.textContent=label;b.onclick=()=>{e.classList.remove('on');fn()};e.appendChild(b)}
+ e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),fn?6500:3200)};
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const today=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
 const isoToday=()=>{const d=new Date();return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate())};
@@ -277,17 +323,24 @@ const isBad=i=>daysLeft(i.date)<0,isSoon=i=>{const d=daysLeft(i.date);return d>=
 // ---------- Navigation ----------
 function go(n){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id==='s-'+n));
  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.go===n));
- if(n==='set'){dayUI();locUI();permUI()}if(n==='out')logUI();if(n==='stock')render();scrollTo(0,0)}
+ if(n==='set'){dayUI();locUI();catUI();driveUI();permUI()}if(n==='out')logUI();if(n==='stock')render();scrollTo(0,0)}
 document.querySelector('.tabs').onclick=e=>{const b=e.target.closest('.tab');if(b)go(b.dataset.go)};
 
 // ---------- Liste ----------
 function visible(){
  const q=$('q').value.trim().toLowerCase();let items=S.items.filter(i=>lf==='all'||i.loc===lf);
+ if($('catSel').value&&$('catSel').value!=='all')items=items.filter(i=>(i.cat||'autre')===$('catSel').value);
  if(sf==='bad')items=items.filter(isBad);else if(sf==='soon')items=items.filter(isSoon);
  if(q)items=items.filter(i=>(i.name+' '+(i.brand||'')+' '+(i.barcode||'')+' '+locOf(i.loc).n).toLowerCase().includes(q));
  const so=$('sort').value;
- if(so==='name')items.sort((a,b)=>a.name.localeCompare(b.name,'fr'));else if(so==='new')items.sort((a,b)=>(b.added||0)-(a.added||0));else items.sort(byDate);
+ if(so==='cat'){const ix=id=>{const k=S.cats.findIndex(c=>c.id===(id||'autre'));return k<0?999:k};items.sort((a,b)=>ix(a.cat)-ix(b.cat)||byDate(a,b))}else if(so==='name')items.sort((a,b)=>a.name.localeCompare(b.name,'fr'));else if(so==='new')items.sort((a,b)=>(b.added||0)-(a.added||0));else items.sort(byDate);
  return items}
+function cardHtml(it){const [c,t]=status(it),L=locOf(it.loc),C=catOf(it.cat),big=it.imgBig||it.img;
+ const im=it.img?`<img class="thumb" data-zoom="${esc(big)}" src="${esc(it.img)}" alt="" onerror="this.outerHTML='<div class=thumb>${L.e}</div>'">`:`<div class="thumb">${L.e}</div>`;
+ return `<div class="swipe"><div class="swbg"><span>🗑️ Supprimer</span><span>Supprimer 🗑️</span></div><div class="prod" data-open="${it.id}">${im}<div class="pi"><div class="pn">${esc(it.name)}</div>
+ <div class="pm">${esc(it.brand||'—')} · ${L.e} ${esc(L.n)} · ${C.e} ${esc(C.n)}</div>
+ <span class="pill ${c}">${it.type} ${fmt(it.date)} · ${t}</span></div>
+ <div class="pq"><div class="step"><button data-q="-1" data-id="${it.id}">−</button><b>${it.qty}</b><button data-q="1" data-id="${it.id}">+</button></div></div></div></div>`}
 function render(){
  $('chips').innerHTML=[{id:'all',e:'🗂️',n:'Tous les lieux'},...S.locs].map(l=>{const c=l.id==='all'?S.items.length:S.items.filter(i=>i.loc===l.id).length;
   return `<button class="chip ${lf===l.id?'on':''}" data-f="${esc(l.id)}">${l.e} ${esc(l.n)} · ${c}</button>`}).join('');
@@ -297,26 +350,47 @@ function render(){
  $('subt').textContent=S.items.length?S.items.length+' lot'+(S.items.length>1?'s':'')+' en stock'+(nb+ns?' · '+(nb+ns)+' à surveiller':' · tout est en ordre'):'Aucun produit pour le moment';
  const items=visible();
  $('count').textContent=items.length+' résultat'+(items.length>1?'s':'');
- $('list').innerHTML=items.length?items.map(it=>{const [c,t]=status(it),L=locOf(it.loc);
-  const im=it.img?`<img class="thumb" src="${esc(it.img)}" alt="" onerror="this.outerHTML='<div class=thumb>${L.e}</div>'">`:`<div class="thumb">${L.e}</div>`;
-  return `<div class="prod" data-open="${it.id}">${im}<div class="pi"><div class="pn">${esc(it.name)}</div>
-  <div class="pm">${esc(it.brand||'—')} · ${L.e} ${esc(L.n)}</div>
-  <span class="pill ${c}">${it.type} ${fmt(it.date)} · ${t}</span></div>
-  <div class="pq"><div class="step"><button data-q="-1" data-id="${it.id}">−</button><b>${it.qty}</b><button data-q="1" data-id="${it.id}">+</button></div></div></div>`}).join('')
-  :`<div class="empty"><div>🥗</div>Aucun produit ne correspond.</div>`;
- const need=S.backup==='both'&&S.items.length&&Date.now()-S.lastBackup>7*864e5;
- $('banner').style.display=need?'block':'none';$('banner').textContent='☁️ Pensez à sauvegarder sur Google Drive (touchez ici)';
+ let html='',last=null;const grouped=$('sort').value==='cat';
+ items.forEach(it=>{const ci=it.cat||'autre';if(grouped&&ci!==last){last=ci;const C=catOf(ci);html+=`<div class="ghead">${C.e} ${esc(C.n)} · ${items.filter(x=>(x.cat||'autre')===ci).length}</div>`}html+=cardHtml(it)});
+ $('list').innerHTML=items.length?html:`<div class="empty"><div>🥗</div>Aucun produit ne correspond.</div>`;
+ const need=S.backup==='both'&&!(S.driveUrl&&S.driveKey);$('banner').style.display=need?'block':'none';$('banner').textContent='☁️ Configurez la synchronisation Google Drive (touchez ici)';
 }
-$('q').addEventListener('input',render);$('sort').onchange=render;
+$('q').addEventListener('input',render);$('sort').onchange=render;$('catSel').onchange=render;
 $('seg').onclick=e=>{const b=e.target.closest('.stat');if(b){sf=(sf===b.dataset.s&&sf!=='all')?'all':b.dataset.s;render()}};
 $('chips').onclick=e=>{const b=e.target.closest('.chip');if(b){lf=b.dataset.f;render()}};
 $('list').onclick=async e=>{
  const q=e.target.closest('[data-q]');
  if(q){const it=S.items.find(i=>i.id===q.dataset.id);if(!it)return;if(+q.dataset.q<0){await removeOne(it.id,true)}else{it.qty++;await save();render()}return}
- const o=e.target.closest('[data-open]');if(o)openSheet(o.dataset.open)};
+ const z=e.target.closest('[data-zoom]');if(z&&!swiped){openLb(z.dataset.zoom);return}
+ const o=e.target.closest('[data-open]');if(o&&!swiped)openSheet(o.dataset.open)};
+// Suppression par balayage (gauche→droite ou droite→gauche)
+let swiped=false;
+async function deleteLot(id){const it=S.items.find(i=>i.id===id);if(!it)return;S.items=S.items.filter(i=>i!==it);await save();render();
+ toast('Supprimé : '+it.name,'Annuler',async()=>{S.items.push(it);await save();render()})}
+(()=>{const L=$('list');let st=null;
+ L.addEventListener('pointerdown',e=>{const c=e.target.closest('.swipe .prod');if(!c||e.target.closest('button'))return;st={c,x:e.clientX,y:e.clientY,dx:0,on:false,id:e.pointerId};swiped=false});
+ L.addEventListener('pointermove',e=>{if(!st)return;const dx=e.clientX-st.x,dy=e.clientY-st.y;
+  if(!st.on){if(Math.abs(dx)>12&&Math.abs(dx)>Math.abs(dy)*1.4){st.on=true;st.c.classList.add('drag');try{st.c.setPointerCapture(st.id)}catch(_){}}else return}
+  st.dx=dx;st.c.style.transform='translateX('+dx+'px)'});
+ const end=()=>{if(!st)return;const c=st.c,w=c.offsetWidth||300;
+  if(st.on){swiped=true;setTimeout(()=>{swiped=false},400);c.classList.remove('drag');
+   if(Math.abs(st.dx)>w*.38){c.style.transform='translateX('+(st.dx>0?w:-w)+'px)';const id=c.dataset.open;setTimeout(()=>deleteLot(id),180)}else c.style.transform=''}
+  st=null};
+ L.addEventListener('pointerup',end);L.addEventListener('pointercancel',end)})();
+// Visionneuse de photo : agrandissement automatique puis retour
+function openLb(src){if(!src)return;const i=$('lbImg');i.src=src;$('lb').showModal();requestAnimationFrame(()=>requestAnimationFrame(()=>$('lb').classList.add('on')))}
+const closeLb=()=>{$('lb').classList.remove('on');setTimeout(()=>{if($('lb').open)$('lb').close()},220)};
+$('lbx').onclick=closeLb;$('lbImg').onclick=closeLb;$('lb').addEventListener('click',e=>{if(e.target===$('lb')||e.target===$('lbs'))closeLb()});
+$('lb').addEventListener('close',()=>$('lb').classList.remove('on'));
+document.addEventListener('click',e=>{const z=e.target.closest('#pthumb[data-zoom],#sThumb[data-zoom]');if(z)openLb(z.dataset.zoom)});
 
 // ---------- Entrée ----------
-function fillLocChips(){$('locChips').innerHTML=S.locs.map(l=>`<button class="chip ${curLoc===l.id?'on':''}" data-l="${esc(l.id)}">${l.e} ${esc(l.n)}</button>`).join('');
+function fillCats(){const o=S.cats.map(c=>`<option value="${esc(c.id)}">${c.e} ${esc(c.n)}</option>`).join('');
+ const v=$('cat').value,sv=$('sCat').value,cv=$('catSel').value;$('cat').innerHTML=o;$('sCat').innerHTML=o;
+ if(S.cats.some(c=>c.id===v))$('cat').value=v;if(S.cats.some(c=>c.id===sv))$('sCat').value=sv;
+ $('catSel').innerHTML='<option value="all">Toutes catégories</option>'+S.cats.map(c=>`<option value="${esc(c.id)}">${c.e} ${esc(c.n)}</option>`).join('');
+ if(cv==='all'||S.cats.some(c=>c.id===cv))$('catSel').value=cv||'all'}
+function fillLocChips(){fillCats();$('locChips').innerHTML=S.locs.map(l=>`<button class="chip ${curLoc===l.id?'on':''}" data-l="${esc(l.id)}">${l.e} ${esc(l.n)}</button>`).join('');
  $('sLoc').innerHTML=S.locs.map(l=>`<option value="${esc(l.id)}">${l.e} ${esc(l.n)}</option>`).join('')}
 $('locChips').onclick=e=>{const b=e.target.closest('[data-l]');if(b){curLoc=b.dataset.l;fillLocChips()}};
 function setType(t,why){curType=t;document.querySelectorAll('#typeSeg .stat').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
@@ -324,7 +398,7 @@ function setType(t,why){curType=t;document.querySelectorAll('#typeSeg .stat').fo
 $('typeSeg').onclick=e=>{const b=e.target.closest('.stat');if(b)setType(b.dataset.t,'Choisi manuellement')};
 const setQty=n=>{qty=Math.max(1,n);$('qVal').textContent=qty};
 $('qMinus').onclick=()=>setQty(qty-1);$('qPlus').onclick=()=>setQty(qty+1);
-function setThumb(){$('pthumb').innerHTML=img?`<img src="${esc(img)}" style="width:100%;height:100%;object-fit:contain;border-radius:14px" alt="">`:'🛒'}
+function setThumb(){$('pthumb').innerHTML=img?`<img src="${esc(img)}" style="width:100%;height:100%;object-fit:contain;border-radius:14px" alt="">`:'🛒';if(img)$('pthumb').dataset.zoom=imgBig||img;else delete $('pthumb').dataset.zoom}
 
 // Type (DLC/DDM) et emplacement proposés d'après la fiche Open Food Facts
 function guess(p){
@@ -334,7 +408,7 @@ function guess(p){
   return{type:'DLC',loc:'frigo',why:'Produit frais → DLC (proposé automatiquement)'};
  if(/dair|yogurt|cheese|fromage|laitier|egg|butter|beurre|juice|jus/.test(t))return{type:'DDM',loc:'frigo',why:'Produit laitier ou frais → DDM (proposé automatiquement)'};
  return{type:'DDM',loc:'garde',why:'Produit sec ou de conservation → DDM (proposé automatiquement)'}}
-function applyKnown(k,why){if(k.name)$('name').value=k.name;if(k.brand!=null)$('brand').value=k.brand;img=k.img||'';setThumb();
+function applyKnown(k,why){if(k.name)$('name').value=k.name;if(k.brand!=null)$('brand').value=k.brand;img=k.img||'';imgBig=k.imgBig||k.img||'';if(k.cat&&S.cats.some(c=>c.id===k.cat))$('cat').value=k.cat;setThumb();
  if(k.type)setType(k.type,why);if(k.loc&&S.locs.some(l=>l.id===k.loc)){curLoc=k.loc;fillLocChips()}}
 function stockNote(code){const lots=S.items.filter(i=>i.barcode===code).sort(byDate),b=$('inStock');
  if(!code||!lots.length){b.style.display='none';return}
@@ -346,11 +420,11 @@ async function lookup(code){
  const k=S.known[code];
  if(k){applyKnown(k,'Reconnu : réglages mémorisés pour ce produit');toast('Produit reconnu ✔');return}
  toast('Recherche du produit…');
- try{const r=await fetch('https://world.openfoodfacts.org/api/v2/product/'+code+'.json?fields=product_name,product_name_fr,brands,image_front_small_url,categories_tags,conservation_conditions');
+ try{const r=await fetch('https://world.openfoodfacts.org/api/v2/product/'+code+'.json?fields=product_name,product_name_fr,brands,image_front_small_url,image_front_url,categories_tags,conservation_conditions');
   const j=await r.json();
   if(j.status!==1){toast('Produit inconnu : saisissez-le à la main');return}
-  const p=j.product,g=guess(p);
-  applyKnown({name:p.product_name_fr||p.product_name||'',brand:(p.brands||'').split(',').slice(0,2).join(', ').trim(),img:p.image_front_small_url||'',type:g.type,loc:g.loc},g.why);
+  const p=j.product,g=guess(p),cat=guessCat((p.categories_tags||[]).join(' ')+' '+(p.product_name_fr||p.product_name||''));
+  applyKnown({name:p.product_name_fr||p.product_name||'',brand:(p.brands||'').split(',').slice(0,2).join(', ').trim(),img:p.image_front_small_url||'',imgBig:p.image_front_url||p.image_front_small_url||'',type:g.type,loc:g.loc,cat},g.why);
   toast('Produit trouvé · '+g.type+' proposé ✔');
  }catch(e){toast('Hors ligne : saisie manuelle')}
 }
@@ -372,15 +446,15 @@ function addLot(o,n){
  const key=x=>(x.barcode||(x.name||'').toLowerCase().trim())+'|'+x.date+'|'+x.loc+'|'+x.type;
  const ex=S.items.find(i=>key(i)===key(o));
  if(ex){ex.qty+=n;return true}
- S.items.push({id:newId(),name:o.name,brand:o.brand||'',loc:o.loc,type:o.type,date:o.date,qty:n,img:o.img||'',barcode:o.barcode||'',added:Date.now()});return false}
+ S.items.push({id:newId(),name:o.name,brand:o.brand||'',loc:o.loc,type:o.type,date:o.date,qty:n,img:o.img||'',imgBig:o.imgBig||'',cat:o.cat||'autre',barcode:o.barcode||'',added:Date.now()});return false}
 $('btnAdd').onclick=async()=>{
  const name=$('name').value.trim(),date=parseFr($('date').value);
  if(!name){toast('Indiquez le nom du produit');return}
  if(!date){toast('Date invalide : format JJ/MM/AAAA');return}
  const code=$('code').value.replace(/\D/g,'');
- const merged=addLot({name,brand:$('brand').value.trim(),loc:curLoc,type:curType,date,img,barcode:code},qty);
- if(code)S.known[code]={name,brand:$('brand').value.trim(),img,type:curType,loc:curLoc};
- ['code','name','brand','date'].forEach(i=>$(i).value='');img='';setThumb();setQty(1);$('inStock').style.display='none';ocrMsg('');setType('DLC','');
+ const merged=addLot({name,brand:$('brand').value.trim(),loc:curLoc,type:curType,date,img,imgBig,cat:$('cat').value,barcode:code},qty);
+ if(code)S.known[code]={name,brand:$('brand').value.trim(),img,imgBig,type:curType,loc:curLoc,cat:$('cat').value};
+ ['code','name','brand','date'].forEach(i=>$(i).value='');img='';imgBig='';$('cat').value='autre';setThumb();setQty(1);$('inStock').style.display='none';ocrMsg('');setType('DLC','');
  await save();render();toast(merged?'Quantité ajoutée à un lot existant ✔':'Ajouté au stock ✔');await catchUp();
 };
 
@@ -389,7 +463,7 @@ const outMsg=(t,c,undo)=>{const e=$('outMsg');e.style.display=t?'block':'none';e
  const u=$('undoBtn');if(u)u.onclick=undoLast};
 async function removeOne(id,quiet){
  const it=S.items.find(i=>i.id===id);if(!it)return;
- S.log.unshift({t:Date.now(),name:it.name,brand:it.brand,loc:it.loc,type:it.type,date:it.date,img:it.img,barcode:it.barcode});S.log=S.log.slice(0,20);
+ S.log.unshift({t:Date.now(),name:it.name,brand:it.brand,loc:it.loc,type:it.type,date:it.date,img:it.img,imgBig:it.imgBig,cat:it.cat,barcode:it.barcode});S.log=S.log.slice(0,20);
  it.qty--;const left=it.qty;if(it.qty<=0)S.items=S.items.filter(i=>i!==it);
  await save();render();logUI();
  outMsg('✅ Retiré : '+it.name+' ('+it.type+' '+fmt(it.date)+') — '+(left>0?'il en reste '+left+' dans ce lot':'lot épuisé'),'ok',true);
@@ -411,13 +485,13 @@ function logUI(){$('logList').innerHTML=S.log.length?S.log.slice(0,10).map(l=>{c
 // ---------- Fiche produit ----------
 function openSheet(id){const it=S.items.find(i=>i.id===id);if(!it)return;sheetId=id;const L=locOf(it.loc);
  $('sThumb').innerHTML=it.img?`<img src="${esc(it.img)}" style="width:100%;height:100%;object-fit:contain;border-radius:14px" alt="">`:L.e;
- $('sTitle').textContent=it.name;$('sMeta').textContent=(it.barcode?'Code '+it.barcode:'Sans code-barres')+' · '+status(it)[1];
- $('sName').value=it.name;$('sBrand').value=it.brand||'';$('sLoc').value=it.loc;$('sType').value=it.type;$('sDate').value=fmt(it.date);$('sQty').textContent=it.qty;$('sheet').showModal()}
+ if(it.img)$('sThumb').dataset.zoom=it.imgBig||it.img;else delete $('sThumb').dataset.zoom;$('sTitle').textContent=it.name;$('sMeta').textContent=(it.barcode?'Code '+it.barcode:'Sans code-barres')+' · '+status(it)[1];
+ $('sName').value=it.name;$('sBrand').value=it.brand||'';$('sLoc').value=it.loc;$('sCat').value=it.cat||'autre';$('sType').value=it.type;$('sDate').value=fmt(it.date);$('sQty').textContent=it.qty;$('sheet').showModal()}
 $('sMinus').onclick=()=>{const v=Math.max(1,+$('sQty').textContent-1);$('sQty').textContent=v};
 $('sPlus').onclick=()=>{$('sQty').textContent=+$('sQty').textContent+1};
 $('sSave').onclick=async()=>{const it=S.items.find(i=>i.id===sheetId),d=parseFr($('sDate').value),n=$('sName').value.trim();
  if(!it)return;if(!n||!d){toast('Nom et date valide obligatoires');return}
- Object.assign(it,{name:n,brand:$('sBrand').value.trim(),loc:$('sLoc').value,type:$('sType').value,date:d,qty:+$('sQty').textContent});
+ Object.assign(it,{name:n,brand:$('sBrand').value.trim(),loc:$('sLoc').value,cat:$('sCat').value,type:$('sType').value,date:d,qty:+$('sQty').textContent});
  await save();render();$('sheet').close();toast('Modifié ✔')};
 $('sOne').onclick=async()=>{$('sheet').close();await removeOne(sheetId)};
 $('sDel').onclick=async()=>{if(!confirm('Supprimer ce lot ?'))return;S.items=S.items.filter(i=>i.id!==sheetId);await save();render();$('sheet').close()};
@@ -518,7 +592,7 @@ async function catchUp(){
   const r=await L.checkPermissions();if(r.display!=='granted')return;
   due.forEach(i=>S.alerted[i.id+'|'+k]=1);
   Object.keys(S.alerted).forEach(x=>{if(!x.endsWith('|'+k))delete S.alerted[x]});
-  await persist();
+  await persist(true);
   await L.schedule({notifications:[{id:hash('c'+Date.now()),
    title:due.length>1?'⚠️ '+due.length+' produits à surveiller':(due[0].type==='DLC'?'⚠️ DLC : ':'🔔 DDM : ')+due[0].name,
    body:due.slice(0,5).map(i=>i.name+(daysLeft(i.date)<0?' (périmé)':' (aujourd’hui)')).join(', ')}]});
@@ -550,8 +624,8 @@ $('dayList').onchange=async e=>{const d=+e.target.dataset.d;if(isNaN(d))return;
 $('addDay').onclick=async()=>{const v=parseInt($('extraDay').value);if(isNaN(v)||v<0)return;if(!S.days.includes(v))S.days.push(v);$('extraDay').value='';await save();dayUI();permUI()};
 $('hour').onchange=async()=>{if($('hour').value){S.hour=$('hour').value;await save();permUI()}};
 $('soon').onchange=async()=>{S.soon=Math.max(1,parseInt($('soon').value)||7);await persist();render()};
-$('bk').onchange=async()=>{S.backup=$('bk').value;await persist();render()};
-const EMO=['❄️','🧊','📦','🥶','🍎','🥛','🧀','🥩','🐟','🥦','🍞','🥫','🍷','🍺','🧃','🍫','🍪','🥚','🧈','🍝','🍚','🫒','🧂','🥡','🍕','🍦','🏠','🛒','🧺','🗄️','🚪','🍽️','☕','🍯','🥜','🧁'];
+$('bk').onchange=async()=>{S.backup=$('bk').value;await persist(true);driveUI();render()};
+const EMO=['❄️','🧊','📦','🚗','🏠','🥶','🍎','🥛','🧀','🥩','🐟','🥦','🍞','🥫','🍷','🍺','🧃','🍫','🍪','🥚','🧈','🍝','🍚','🫒','🧂','🥡','🍕','🍦','🛒','🧺','🗄️','🚪','🍽️','☕','🍯','🥜','🧁','🥗','🍖','🥣','🥬','🔧','🅿️','🏷️'];
 let iconCb=null;$('igrid').innerHTML=EMO.map(e=>`<button data-e="${e}">${e}</button>`).join('');
 const pickIcon=cb=>{iconCb=cb;$('iconDlg').showModal()};
 $('igrid').onclick=e=>{const b=e.target.closest('[data-e]');if(b&&iconCb){iconCb(b.dataset.e);$('iconDlg').close()}};
@@ -567,6 +641,58 @@ $('locList').onclick=async e=>{
 $('locList').onchange=async e=>{const l=S.locs.find(x=>x.id===e.target.dataset.id);if(!l)return;const v=e.target.value.trim();if(!v){e.target.value=l.n;return}l.n=v;await persist();fillLocChips();render()};
 $('addLoc').onclick=async()=>{const n=$('newN').value.trim();if(!n)return;S.locs.push({id:'l'+Date.now().toString(36),e:newIcon,n});$('newN').value='';newIcon='📦';$('newE').textContent='📦';await persist();locUI();fillLocChips();render()};
 
+// ---------- Catégories (réglages) ----------
+function catUI(){$('catList').innerHTML=S.cats.map(c=>`<div class="locrow"><button class="ibtn" data-cic="${esc(c.id)}">${esc(c.e)}</button><input class="g" value="${esc(c.n)}" data-cid="${esc(c.id)}"><button class="btn sec" style="width:auto" data-cd="${esc(c.id)}">🗑️</button></div>`).join('')}
+$('catList').onclick=async e=>{const ic=e.target.closest('[data-cic]');
+ if(ic){pickIcon(async em=>{const c=S.cats.find(x=>x.id===ic.dataset.cic);if(c){c.e=em;await persist();catUI();fillCats();render()}});return}
+ const d=e.target.closest('[data-cd]');if(!d)return;const id=d.dataset.cd;
+ if(id==='autre'){toast('La catégorie « Autre » est conservée');return}
+ if(S.items.some(i=>(i.cat||'autre')===id)){toast('Déplacez d’abord les produits de cette catégorie');return}
+ if(!confirm('Supprimer cette catégorie ?'))return;S.cats=S.cats.filter(c=>c.id!==id);await persist();catUI();fillCats();render()};
+$('catList').onchange=async e=>{const c=S.cats.find(x=>x.id===e.target.dataset.cid);if(!c)return;const v=e.target.value.trim();if(!v){e.target.value=c.n;return}c.n=v;await persist();fillCats();render()};
+let newCIcon='🏷️';$('newCE').onclick=()=>pickIcon(e=>{newCIcon=e;$('newCE').textContent=e});
+$('addCat').onclick=async()=>{const n=$('newCN').value.trim();if(!n)return;const at=S.cats.findIndex(c=>c.id==='autre');
+ S.cats.splice(at<0?S.cats.length:at,0,{id:'c'+Date.now().toString(36),e:newCIcon,n});$('newCN').value='';newCIcon='🏷️';$('newCE').textContent='🏷️';await persist();catUI();fillCats();render()};
+
+// ---------- Synchronisation Google Drive (script Google personnel) ----------
+const syncOn=()=>S.backup==='both'&&!!S.driveUrl&&!!S.driveKey;
+const withTimeout=(p,ms)=>Promise.race([p,new Promise((_,r)=>setTimeout(()=>r(new Error('délai dépassé')),ms))]);
+async function drivePost(){const {driveUrl,driveKey,autoSync,lastSync,...data}=S;
+ const r=await withTimeout(fetch(S.driveUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({key:S.driveKey,updated:S.updated,data})}),30000);
+ const t=await r.text();let j;try{j=JSON.parse(t)}catch(e){throw new Error('réponse inattendue (adresse du script correcte ?)')}
+ if(!j.ok)throw new Error(j.erreur||'refusé');return j}
+async function driveGet(){const u=S.driveUrl+(S.driveUrl.includes('?')?'&':'?')+'key='+encodeURIComponent(S.driveKey);
+ const r=await withTimeout(fetch(u),30000);const t=await r.text();let j;try{j=JSON.parse(t)}catch(e){throw new Error('réponse inattendue (adresse du script correcte ?)')}
+ if(!j.ok)throw new Error(j.erreur||'refusé');return j}
+let syncErr='',pushT=null,pushing=false;
+function queuePush(){if(!syncOn()||S.autoSync===false)return;clearTimeout(pushT);pushT=setTimeout(pushNow,4000)}
+async function pushNow(){if(!syncOn()||pushing)return;pushing=true;
+ try{await drivePost();S.lastSync=Date.now();syncErr=''}catch(e){syncErr=(e&&e.message)||String(e)}
+ pushing=false;await persist(true);driveUI()}
+async function loadRemote(r){const keep={driveUrl:S.driveUrl,driveKey:S.driveKey,autoSync:S.autoSync,backup:S.backup,lastSync:Date.now()};
+ S=Object.assign(JSON.parse(JSON.stringify(DEF)),r.data,keep,{updated:r.updated});
+ if(!Array.isArray(S.locs)||!S.locs.length)S.locs=JSON.parse(JSON.stringify(DEF.locs));
+ if(!Array.isArray(S.cats)||!S.cats.length)S.cats=JSON.parse(JSON.stringify(DEF.cats));
+ S.items.forEach(i=>{if(!i.cat)i.cat=guessCat(i.name)});curLoc=S.locs[0].id;
+ await persist(true);await resched();fillLocChips();render();dayUI();locUI();catUI();driveUI()}
+async function syncNow(manual){
+ if(!syncOn()){if(manual)toast('Renseignez l’adresse du script et la clé');return}
+ try{const r=await driveGet();
+  if(r.data&&r.updated>S.updated+1000&&confirm('Une version plus récente existe sur Google Drive ('+new Date(r.updated).toLocaleString('fr-FR')+'). La charger sur ce téléphone ?')){
+   await loadRemote(r);syncErr='';driveUI();toast('Données Drive chargées ✔');return}
+  await drivePost();S.lastSync=Date.now();syncErr='';await persist(true);driveUI();if(manual)toast('Synchronisé ✔')
+ }catch(e){syncErr=(e&&e.message)||String(e);driveUI();if(manual)toast('Échec : '+syncErr)}}
+function driveUI(){$('bk').value=S.backup;$('driveBox').style.display=S.backup==='both'?'block':'none';
+ $('driveUrl').value=S.driveUrl||'';$('driveKey').value=S.driveKey||'';$('autoSync').checked=S.autoSync!==false;
+ $('syncState').innerHTML=(S.lastSync?'✅ Dernière synchronisation : '+esc(new Date(S.lastSync).toLocaleString('fr-FR')):'⏳ Pas encore synchronisé')+(syncErr?'<br>⚠️ '+esc(syncErr):'')}
+$('driveUrl').onchange=async()=>{S.driveUrl=$('driveUrl').value.trim();await persist(true);render()};
+$('driveKey').onchange=async()=>{S.driveKey=$('driveKey').value.trim();await persist(true);render()};
+$('autoSync').onchange=async()=>{S.autoSync=$('autoSync').checked;await persist(true)};
+$('btnSync').onclick=async()=>{S.driveUrl=$('driveUrl').value.trim();S.driveKey=$('driveKey').value.trim();await persist(true);await syncNow(true);render()};
+$('btnPull').onclick=async()=>{S.driveUrl=$('driveUrl').value.trim();S.driveKey=$('driveKey').value.trim();await persist(true);
+ try{const r=await driveGet();if(!r.data){toast('Aucune sauvegarde sur Drive pour le moment');return}
+  if(confirm('Remplacer les données de ce téléphone par celles de Drive ?')){await loadRemote(r);toast('Restauré depuis Drive ✔')}}catch(e){toast('Échec : '+((e&&e.message)||e))}};
+
 // ---------- Sauvegarde ----------
 async function backupNow(){
  const data=JSON.stringify(S,null,1),F=P.Filesystem,Sh=P.Share;
@@ -575,7 +701,7 @@ async function backupNow(){
   S.lastBackup=Date.now();await persist();render();return}catch(e){if(/cancel/i.test(String(e)))return}}
  try{await navigator.clipboard.writeText(data);toast('Sauvegarde copiée : collez-la dans une note')}catch(e){prompt('Copiez cette sauvegarde :',data)}
 }
-$('btnBk').onclick=backupNow;$('banner').onclick=backupNow;
+$('btnBk').onclick=backupNow;$('banner').onclick=()=>{go('set')};
 $('btnRs').onclick=()=>$('fileIn').click();
 $('fileIn').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
  try{const j=JSON.parse(await f.text());if(!Array.isArray(j.items))throw 0;S=Object.assign(S,j);await save();fillLocChips();dayUI();locUI();render();toast('Restauré ✔')}catch(_){toast('Fichier de sauvegarde invalide')}};
@@ -583,7 +709,7 @@ $('fileIn').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f
 document.addEventListener('visibilitychange',async()=>{if(!document.hidden){render();await catchUp()}});
 (async()=>{await load();fillLocChips();render();setType('DLC','');
  if(P.LocalNotifications){try{const r=await P.LocalNotifications.checkPermissions();if(r.display==='prompt'||r.display==='prompt-with-rationale')await P.LocalNotifications.requestPermissions()}catch(e){}}
- await resched();await catchUp()})();
+ await resched();await catchUp();await syncNow(false)})();
 </script>
 </body>
 </html>
