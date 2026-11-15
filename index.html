@@ -103,28 +103,102 @@ dialog#lb.on #lbs img{transform:scale(1)}
 .toast.act{pointer-events:auto}
 .toast .tb{margin-left:12px;background:#ffffff33;color:#fff;padding:6px 12px;border-radius:10px;font-size:13px}
 .toolbar .tsel{display:flex;gap:6px}.toolbar .tsel select{max-width:150px}
+
+/* ===== design v4 ===== */
+:root{--bg:#f1f4f9;--card:#fff;--tx:#0e1a2b;--mut:#62708a;--line:#e4e9f1;--pri:#0f9d6a;--pri-d:#0a7a52;--pri2:#e2f6ed;--ok:#0e9463;--okbg:#e2f6ed;--warn:#c27400;--warnbg:#fff0d2;--bad:#d93a3a;--badbg:#fde7e7;--inp:#f4f6fb;--blue:#2f6bff;--blue2:#e6edff;--onpri:#fff;--sh:0 1px 2px rgba(14,26,43,.05),0 10px 28px rgba(14,26,43,.07)}
+@media (prefers-color-scheme:dark){:root{--bg:#0c1320;--card:#162033;--tx:#ebf1fb;--mut:#92a0b8;--line:#243350;--pri:#2fd08e;--pri-d:#22b077;--pri2:#173a35;--ok:#43d39a;--okbg:#14372f;--warn:#f2b44f;--warnbg:#3b2f12;--bad:#ff7d7d;--badbg:#401d24;--inp:#101a2c;--blue:#7ea2ff;--blue2:#1b2a52;--onpri:#062a1c;--sh:none}
+ .cc{background:hsl(var(--h) 35% 22%)!important;color:hsl(var(--h) 80% 82%)!important}.ctile{background:hsl(var(--h) 32% 20%)!important}.ctile.on{background:hsl(var(--h) 40% 26%)!important}}
+body{padding-top:0}
+main{padding:calc(14px + env(safe-area-inset-top)) 16px calc(104px + env(safe-area-inset-bottom))}
+.btn:not(.sec):not(.out):not(.red){color:var(--onpri);background:linear-gradient(135deg,var(--pri),var(--pri-d))}
+.chip.on{color:var(--onpri)}
+.hero{margin:calc(-14px - env(safe-area-inset-top)) -16px 0;padding:calc(20px + env(safe-area-inset-top)) 18px 78px;background:linear-gradient(135deg,#0f9d6a 0%,#0b8aa6 62%,#3a6bff 130%);color:#fff;border-radius:0 0 34px 34px}
+.htop{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.hero h1{color:#fff;font-size:24px;line-height:1.2;margin:0}
+.hsub{opacity:.92;font-size:14px;margin-top:5px}
+.hbtn{width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.22);color:#fff;font-size:20px;padding:0;flex:none}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:-52px 0 16px;position:relative}
+.kpi{background:var(--card);border-radius:22px;padding:12px 6px 11px;text-align:center;box-shadow:var(--sh);display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;color:var(--mut);font-weight:650}
+.kpi b{font-size:27px;color:var(--tx);line-height:1.15}
+.kpi .ki{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;font-size:20px;margin-bottom:3px}
+.k-bad .ki{background:var(--badbg)}.k-bad b{color:var(--bad)}
+.k-soon .ki{background:var(--warnbg)}.k-soon b{color:var(--warn)}
+.k-all .ki{background:var(--blue2)}
+.qa{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.qa .btn{padding:15px 10px;border-radius:18px;font-size:15.5px}
+.sech{display:flex;justify-content:space-between;align-items:center;margin:22px 2px 10px}.sech h2{font-size:17px;margin:0}
+.lnk{color:var(--pri);font-weight:700;padding:6px 4px}
+.phead{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.ctiles{display:flex;gap:10px;overflow-x:auto;padding:4px 16px 12px;margin:0 -16px;scrollbar-width:none}.ctiles::-webkit-scrollbar{display:none}
+.ctile{flex:none;width:82px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:11px 4px 9px;border-radius:20px;background:hsl(var(--h) 85% 94%);border:2.5px solid transparent;color:var(--tx)}
+.ctile .ce{font-size:30px;line-height:1.1}
+.ctile .cl{font-size:11.5px;font-weight:700;text-align:center;line-height:1.15;min-height:27px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ctile .cn{font-size:11px;color:var(--mut);font-weight:700}
+.ctile.on{border-color:hsl(var(--h) 65% 42%);background:hsl(var(--h) 92% 89%);box-shadow:0 4px 14px hsl(var(--h) 70% 50% / .25)}
+#seg{display:flex;gap:8px;margin-bottom:10px;overflow-x:auto}
+#seg .stat{flex:none;display:flex;align-items:center;gap:7px;padding:9px 15px;border-radius:999px;font-size:14px;font-weight:650;color:var(--tx);text-align:left;box-shadow:none;border:2px solid var(--line)}
+#seg .stat b{display:inline;font-size:14px;color:inherit}
+#seg .stat.on{background:var(--pri);border-color:var(--pri);color:var(--onpri)}
+.prod{border-left:5px solid var(--ok)}.prod.warn{border-left-color:var(--warn)}.prod.bad{border-left-color:var(--bad)}
+.swipe .prod{border-radius:18px}
+.thumb{width:74px;height:74px}
+.cc{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:650;background:hsl(var(--h) 85% 92%);color:hsl(var(--h) 60% 28%)}
+.op{font-size:12.5px;color:var(--warn);font-weight:650;margin-top:5px}
+.tabs{grid-template-columns:repeat(5,1fr)}
+.tab{font-size:10.5px;padding:7px 1px}
+#sheet{position:fixed;inset:0;background:var(--bg);z-index:40;display:none;overflow-y:auto}
+#sheet.on{display:block}
+.dhead{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:calc(10px + env(safe-area-inset-top)) 14px 10px 18px;background:var(--bg);border-bottom:1px solid var(--line)}
+.dhead b{font-size:18px}
+.xbtn{width:46px;height:46px;border-radius:50%;background:var(--card);border:1px solid var(--line);font-size:20px;padding:0;box-shadow:var(--sh);color:var(--tx)}
+.dbody{max-width:600px;margin:0 auto;padding:14px 16px calc(34px + env(safe-area-inset-bottom))}
+.dhero{display:flex;gap:14px;align-items:center;background:linear-gradient(135deg,var(--pri2),var(--blue2));border-radius:24px;padding:16px;margin-bottom:14px}
+.dhero .thumb{width:98px;height:98px;font-size:42px}
+.oh{font-weight:750;font-size:16px}
+.oest{margin-top:6px;font-size:15px}.oest small{display:block;color:var(--mut);margin-top:3px;font-size:12.5px}
+.rrow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.rrow input{width:86px;flex:none;text-align:center;font-weight:700}
+.rn{width:30px;height:30px;border-radius:50%;background:var(--pri2);color:var(--pri);display:grid;place-items:center;font-weight:800;font-size:13px;flex:none}
+.rl{font-size:15px}
+.dn{width:70px!important;flex:none;text-align:center;padding:10px 6px!important}
+.locrow .dl{align-self:center;font-size:12px;color:var(--mut);flex:none}
 </style>
 </head>
 <body>
 <main>
 
-<!-- ============ STOCK ============ -->
-<section class="screen on" id="s-stock">
- <h1 style="font-size:23px;line-height:1.2">Gestion des stocks alimentaires</h1><p class="subt" id="subt"></p>
+<section class="screen on" id="s-home">
+ <div class="hero">
+  <div class="htop"><div><h1>Gestion des stocks alimentaires</h1><div class="hsub" id="hsub"></div></div><button class="hbtn" data-go="set" aria-label="Réglages">⚙️</button></div>
+ </div>
+ <div class="kpis" id="kpis">
+  <button class="kpi k-bad" data-kpi="bad"><span class="ki">⛔</span><b id="kBad">0</b>Périmés</button>
+  <button class="kpi k-soon" data-kpi="soon"><span class="ki">⏳</span><b id="kSoon">0</b>Bientôt</button>
+  <button class="kpi k-all" data-kpi="all"><span class="ki">🧺</span><b id="kAll">0</b>En stock</button>
+ </div>
  <button class="banner" id="banner" style="display:none"></button>
+ <div class="qa"><button class="btn" id="qaIn">＋ Ajouter</button><button class="btn red" id="qaOut">− Retirer</button></div>
+ <div class="sech"><h2>🆕 Derniers produits ajoutés</h2><button class="lnk" data-go="stock">Tout voir ›</button></div>
+ <div id="homeNew"></div>
+ <div class="sech"><h2>⏰ À consommer en priorité</h2></div>
+ <div id="homeSoon"></div>
+</section>
+
+<section class="screen" id="s-stock">
+ <div class="phead"><h1>Produits</h1><span class="subt" id="subt" style="margin:0"></span></div>
  <div class="search"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="q" type="search" placeholder="Rechercher un produit, une marque, un code…" autocomplete="off"></div>
- <div class="seg" id="seg">
-  <button class="stat bad" data-s="bad"><b id="sBad">0</b>Périmés</button>
-  <button class="stat soon" data-s="soon"><b id="sSoon">0</b>Bientôt</button>
-  <button class="stat on" data-s="all"><b id="sAll">0</b>Tous</button>
+ <div class="ctiles" id="catTiles"></div>
+ <div id="seg">
+  <button class="stat on" data-s="all">Tous <b id="sAll">0</b></button>
+  <button class="stat" data-s="soon">⏳ Bientôt <b id="sSoon">0</b></button>
+  <button class="stat" data-s="bad">⛔ Périmés <b id="sBad">0</b></button>
  </div>
  <div class="chips" id="chips"></div>
  <div class="toolbar"><span id="count"></span>
-  <span class="tsel"><select id="catSel"></select><select id="sort"><option value="date">Date la plus proche</option><option value="cat">Par catégorie</option><option value="name">Nom A→Z</option><option value="new">Ajouts récents</option></select></span></div>
+  <select id="sort"><option value="date">Date la plus proche</option><option value="cat">Par catégorie</option><option value="name">Nom A→Z</option><option value="new">Ajouts récents</option></select></div>
  <div id="list"></div>
 </section>
 
-<!-- ============ ENTRÉE ============ -->
 <section class="screen" id="s-in">
  <h1>Ajouter un produit</h1><p class="subt">Scannez le code-barres, puis indiquez la date.</p>
  <button class="btn big" id="btnScan"><svg class="i" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Scanner le code-barres</button>
@@ -134,7 +208,7 @@ dialog#lb.on #lbs img{transform:scale(1)}
   <div id="inStock" class="msg warn" style="display:none"></div>
   <div class="row" style="margin-top:14px;align-items:center"><div id="pthumb" class="thumb">🛒</div><div class="g"><label class="lbl" style="margin-top:0">Nom du produit *</label><input id="name" placeholder="Ex : Yaourt nature"></div></div>
   <label class="lbl">Marque</label><input id="brand" placeholder="Ex : Danone">
-  <label class="lbl">Catégorie</label><select id="cat"></select>
+  <label class="lbl">Catégorie</label><select id="cat" style="display:none"></select><div class="ctiles" id="catPick"></div>
   <label class="lbl">Emplacement *</label><div class="chips" id="locChips"></div>
   <label class="lbl">Type de date</label>
   <div class="seg two" id="typeSeg"><button class="stat on" data-t="DLC"><b style="font-size:17px">DLC</b>À consommer jusqu’au</button><button class="stat" data-t="DDM"><b style="font-size:17px">DDM</b>De préférence avant</button></div>
@@ -148,8 +222,6 @@ dialog#lb.on #lbs img{transform:scale(1)}
   <button class="btn" id="btnAdd" style="margin-top:18px">Ajouter au stock</button>
  </div>
 </section>
-
-<!-- ============ SORTIE ============ -->
 <section class="screen" id="s-out">
  <h1>Retirer un produit</h1><p class="subt">Scannez à nouveau le code-barres pour le sortir du stock.</p>
  <button class="btn big red" id="btnScanOut"><svg class="i" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Scanner pour retirer</button>
@@ -162,16 +234,14 @@ dialog#lb.on #lbs img{transform:scale(1)}
  <h2 style="font-size:16px;margin:18px 2px 8px">Dernières sorties</h2>
  <div id="logList"></div>
 </section>
-
-<!-- ============ RÉGLAGES ============ -->
 <section class="screen" id="s-set">
- <h1>Réglages</h1><p class="subt">Notifications, emplacements et sauvegarde.</p>
+ <h1>Réglages</h1><p class="subt">Rappels, emplacements, catégories et sauvegarde.</p>
  <div class="card">
-  <h2 style="font-size:17px;margin:0 0 4px">🔔 Notifications</h2>
-  <p class="hint" style="margin:0 0 6px">Cochez quand être prévenu avant la date de chaque produit. « 7 jours avant » = une alerte une semaine avant la date.</p>
-  <div id="dayList"></div>
-  <label class="lbl">Autre délai (jours avant)</label>
-  <div class="row"><input class="g" id="extraDay" type="number" min="0" inputmode="numeric" placeholder="ex : 10"><button class="btn sec" id="addDay" style="width:auto">Ajouter</button></div>
+  <h2 style="font-size:17px;margin:0 0 4px">🔔 Rappels</h2>
+  <p class="hint" style="margin:0 0 8px">Choisissez combien de rappels vous voulez avant la date de chaque produit, et à quel moment.</p>
+  <div class="qrow"><b>Nombre de rappels</b><div class="step"><button id="rMinus">−</button><b id="rCount">6</b><button id="rPlus">+</button></div></div>
+  <div id="dayList" style="margin-top:6px"></div>
+  <p class="hint">« 0 jour » = le jour même de la date.</p>
   <label class="lbl">Heure de l’alerte</label><input id="hour" type="time">
   <div class="status" id="permState"></div>
   <div class="row"><button class="btn sec g" id="btnPerm">1. Autoriser</button><button class="btn sec g" id="btnExact">2. Alarmes</button></div>
@@ -191,7 +261,7 @@ dialog#lb.on #lbs img{transform:scale(1)}
  </div>
  <div class="card">
   <h2 style="font-size:17px;margin:0 0 4px">🗂️ Catégories de produits</h2>
-  <p class="hint" style="margin:0 0 10px">Touchez l’icône pour la changer, modifiez le nom, ou ajoutez une catégorie.</p>
+  <p class="hint" style="margin:0 0 10px">Touchez l’icône pour la changer, modifiez le nom, ou ajoutez une catégorie. Le nombre de jours indique la durée de consommation estimée après ouverture.</p>
   <div id="catList"></div>
   <div class="locrow"><button class="ibtn" id="newCE">🏷️</button><input class="g" id="newCN" placeholder="Nouvelle catégorie"><button class="btn sec" id="addCat" style="width:auto">Ajouter</button></div>
  </div>
@@ -210,34 +280,40 @@ dialog#lb.on #lbs img{transform:scale(1)}
   <div class="row"><button class="btn out g" id="btnBk">Sauvegarder</button><button class="btn out g" id="btnRs">Restaurer</button></div>
   <input type="file" id="fileIn" accept=".json,application/json" hidden>
  </div>
- <p class="hint" style="text-align:center">Gestion des stocks alimentaires · version 3.1</p>
+ <p class="hint" style="text-align:center">Gestion des stocks alimentaires · version 4.0</p>
 </section>
 </main>
 
 <nav class="tabs">
- <button class="tab on" data-go="stock"><svg class="i" viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>Stock</button>
- <button class="tab" data-go="in"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>Entrée</button>
+ <button class="tab on" data-go="home"><svg class="i" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>Accueil</button>
+ <button class="tab" data-go="stock"><svg class="i" viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>Produits</button>
+ <button class="tab" data-go="in"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>Ajouter</button>
  <button class="tab" data-go="out"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>Sortie</button>
  <button class="tab" data-go="set"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 12h3M11 12h9M4 17h11M19 17h1"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="17" r="2"/></svg>Réglages</button>
 </nav>
 
-<!-- Fiche produit -->
-<dialog id="sheet" class="sheet">
- <div class="grab"></div>
- <div class="shead"><div id="sThumb" class="thumb">📦</div><div class="g"><div class="pn" id="sTitle" style="font-size:18px"></div><div class="pm" id="sMeta"></div></div></div>
- <label class="lbl">Nom</label><input id="sName">
- <label class="lbl">Marque</label><input id="sBrand">
- <label class="lbl">Emplacement</label><select id="sLoc"></select>
- <label class="lbl">Catégorie</label><select id="sCat"></select>
- <label class="lbl">Type de date</label>
- <select id="sType"><option value="DLC">DLC – consommer jusqu’au</option><option value="DDM">DDM – de préférence avant</option></select>
- <label class="lbl">Date (JJ/MM/AAAA)</label><input id="sDate" class="dateIn" inputmode="numeric" maxlength="10" placeholder="JJ/MM/AAAA">
- <label class="lbl">Quantité</label>
- <div class="qrow"><span></span><div class="step"><button id="sMinus">−</button><b id="sQty">1</b><button id="sPlus">+</button></div></div>
- <button class="btn" id="sSave" style="margin-top:16px">Enregistrer</button>
- <div class="row" style="margin-top:8px"><button class="btn out g" id="sOne">Retirer 1</button><button class="btn out g" id="sDel" style="color:var(--bad)">Supprimer</button></div>
- <button class="btn out" id="sClose" style="margin-top:8px">Fermer</button>
-</dialog>
+<!-- Fiche produit (page complète) -->
+<div id="sheet">
+ <div class="dhead"><b>Fiche produit</b><button class="xbtn" id="sClose" aria-label="Fermer">✕</button></div>
+ <div class="dbody">
+  <div class="dhero"><div id="sThumb" class="thumb">📦</div><div class="g" style="min-width:0"><div class="pn" id="sTitle" style="font-size:18px"></div><div class="pm" id="sMeta" style="white-space:normal"></div><span id="sPill" class="pill"></span><div class="pm" id="sCode" style="margin:6px 0 0"></div></div></div>
+  <div class="card" id="openCard"></div>
+  <div class="card">
+   <label class="lbl">Nom</label><input id="sName">
+   <label class="lbl">Marque</label><input id="sBrand">
+   <label class="lbl">Emplacement</label><select id="sLoc"></select>
+   <label class="lbl">Catégorie</label><select id="sCat"></select>
+   <label class="lbl">Type de date</label>
+   <select id="sType"><option value="DLC">DLC – consommer jusqu’au</option><option value="DDM">DDM – de préférence avant</option></select>
+   <label class="lbl">Date (JJ/MM/AAAA)</label><input id="sDate" class="dateIn" inputmode="numeric" maxlength="10" placeholder="JJ/MM/AAAA">
+   <label class="lbl">Quantité</label>
+   <div class="qrow"><span></span><div class="step"><button id="sMinus">−</button><b id="sQty">1</b><button id="sPlus">+</button></div></div>
+  </div>
+  <button class="btn" id="sSave">Enregistrer les modifications</button>
+  <div class="row" style="margin-top:10px"><button class="btn out g" id="sOne">Retirer 1</button><button class="btn out g" id="sDel" style="color:var(--bad)">Supprimer</button></div>
+  <p class="hint" style="text-align:center;margin-top:14px">Pour quitter sans rien modifier, touchez ✕ en haut à droite.</p>
+ </div>
+</div>
 
 <!-- Choix du lot à retirer -->
 <dialog id="pick" class="mid">
@@ -270,7 +346,7 @@ const p2=n=>String(n).padStart(2,'0');
 const DEF={items:[],days:[30,15,7,3,1,0],hour:'09:00',soon:7,backup:'local',lastBackup:0,alerted:{},known:{},log:[],updated:0,driveUrl:'',driveKey:'',autoSync:true,lastSync:0,
  cats:[{id:'frais',e:'🥗',n:'Frais'},{id:'yaourts',e:'🥛',n:'Yaourts & laitages'},{id:'fromages',e:'🧀',n:'Fromages'},{id:'viandes',e:'🥩',n:'Viandes & poissons'},{id:'traiteur',e:'🍖',n:'Charcuterie & traiteur'},{id:'fruits',e:'🍎',n:'Fruits & légumes'},{id:'surgeles',e:'🧊',n:'Surgelés'},{id:'boissons',e:'🧃',n:'Boissons'},{id:'biscuits',e:'🍪',n:'Biscuits & gâteaux'},{id:'sucre',e:'🍫',n:'Chocolats & confiseries'},{id:'petitdej',e:'🥣',n:'Petit-déjeuner'},{id:'epicerie',e:'🥫',n:'Épicerie'},{id:'autre',e:'📦',n:'Autre'}],
  locs:[{id:'frigo',e:'❄️',n:'Frigo'},{id:'congel',e:'🧊',n:'Congélateur'},{id:'garde',e:'📦',n:'Garde-manger'}]};
-let S=JSON.parse(JSON.stringify(DEF)),lf='all',sf='all',img='',imgBig='',curType='DLC',curLoc='frigo',qty=1,sheetId=null;
+let S=JSON.parse(JSON.stringify(DEF)),lf='all',sf='all',img='',imgBig='',cf='all',curType='DLC',curLoc='frigo',qty=1,sheetId=null;
 const locOf=id=>S.locs.find(l=>l.id===id)||{e:'📦',n:id||'?'};
 const catOf=id=>S.cats.find(c=>c.id===id)||S.cats.find(c=>c.id==='autre')||{e:'📦',n:'Autre'};
 function guessCat(t){t=(t||'').toLowerCase();
@@ -305,7 +381,14 @@ const hash=s=>{let h=7;for(const c of s)h=(h*31+c.charCodeAt(0))%2147483000;retu
 const mk=(y,m,d)=>{const dt=new Date(y,m-1,d);if(dt.getFullYear()!==y||dt.getMonth()!==m-1||dt.getDate()!==d||y<2000||y>2060)return null;return y+'-'+p2(m)+'-'+p2(d)};
 const parseFr=s=>{const m=/^(\d{2})\/(\d{2})\/(\d{4})$/.exec(String(s).trim());return m?mk(+m[3],+m[2],+m[1]):null};
 const newId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,5);
-const byDate=(a,b)=>a.date.localeCompare(b.date);
+const DEFOPEN={frais:3,yaourts:3,fromages:7,viandes:2,traiteur:3,fruits:3,surgeles:1,boissons:4,biscuits:30,sucre:30,petitdej:30,epicerie:5,autre:5};
+const HUES={frais:150,yaourts:205,fromages:45,viandes:355,traiteur:18,fruits:118,surgeles:190,boissons:232,biscuits:30,sucre:322,petitdej:58,epicerie:88,autre:215};
+const catHue=id=>HUES[id]!==undefined?HUES[id]:(hash(String(id))%360);
+const openDaysOf=cid=>{const c=S.cats.find(x=>x.id===cid);return (c&&c.d)||DEFOPEN[cid]||5};
+const addDaysISO=(iso,n)=>{const d=new Date(iso+'T00:00:00');d.setDate(d.getDate()+n);return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate())};
+const openEst=it=>it.openedAt?addDaysISO(it.openedAt,it.openDays||openDaysOf(it.cat)):null;
+const effDate=it=>{const e=openEst(it);return e&&e<it.date?e:it.date};
+const byDate=(a,b)=>effDate(a).localeCompare(effDate(b));
 
 function maskDate(el){
  el.addEventListener('input',()=>{const d=el.value.replace(/\D/g,'').slice(0,8);
@@ -313,23 +396,23 @@ function maskDate(el){
  el.addEventListener('blur',()=>{const d=el.value.replace(/\D/g,'');if(d.length===6)el.value=d.slice(0,2)+'/'+d.slice(2,4)+'/20'+d.slice(4)})}
 maskDate($('date'));maskDate($('sDate'));
 
-function status(it){const d=daysLeft(it.date);
+function status(it){const d=daysLeft(effDate(it));
  if(d<0)return['bad',it.type==='DLC'?'Périmé depuis '+(-d)+' j':'Dépassé de '+(-d)+' j'];
  if(d===0)return['bad','Aujourd’hui'];
  if(d<=S.soon)return['warn','Dans '+d+' j'];
  return['','Dans '+d+' j'];}
-const isBad=i=>daysLeft(i.date)<0,isSoon=i=>{const d=daysLeft(i.date);return d>=0&&d<=S.soon};
+const isBad=i=>daysLeft(effDate(i))<0,isSoon=i=>{const d=daysLeft(effDate(i));return d>=0&&d<=S.soon};
 
 // ---------- Navigation ----------
 function go(n){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id==='s-'+n));
  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.go===n));
- if(n==='set'){dayUI();locUI();catUI();driveUI();permUI()}if(n==='out')logUI();if(n==='stock')render();scrollTo(0,0)}
+ if(n==='set'){dayUI();locUI();catUI();driveUI();permUI()}if(n==='out')logUI();if(n==='stock'||n==='home')render();scrollTo(0,0)}
 document.querySelector('.tabs').onclick=e=>{const b=e.target.closest('.tab');if(b)go(b.dataset.go)};
 
 // ---------- Liste ----------
 function visible(){
  const q=$('q').value.trim().toLowerCase();let items=S.items.filter(i=>lf==='all'||i.loc===lf);
- if($('catSel').value&&$('catSel').value!=='all')items=items.filter(i=>(i.cat||'autre')===$('catSel').value);
+ if(cf!=='all')items=items.filter(i=>(i.cat||'autre')===cf);
  if(sf==='bad')items=items.filter(isBad);else if(sf==='soon')items=items.filter(isSoon);
  if(q)items=items.filter(i=>(i.name+' '+(i.brand||'')+' '+(i.barcode||'')+' '+locOf(i.loc).n).toLowerCase().includes(q));
  const so=$('sort').value;
@@ -337,37 +420,56 @@ function visible(){
  return items}
 function cardHtml(it){const [c,t]=status(it),L=locOf(it.loc),C=catOf(it.cat),big=it.imgBig||it.img;
  const im=it.img?`<img class="thumb" data-zoom="${esc(big)}" src="${esc(it.img)}" alt="" onerror="this.outerHTML='<div class=thumb>${L.e}</div>'">`:`<div class="thumb">${L.e}</div>`;
- return `<div class="swipe"><div class="swbg"><span>🗑️ Supprimer</span><span>Supprimer 🗑️</span></div><div class="prod" data-open="${it.id}">${im}<div class="pi"><div class="pn">${esc(it.name)}</div>
- <div class="pm">${esc(it.brand||'—')} · ${L.e} ${esc(L.n)} · ${C.e} ${esc(C.n)}</div>
- <span class="pill ${c}">${it.type} ${fmt(it.date)} · ${t}</span></div>
+ const op=it.openedAt?`<div class="op">📂 Ouvert · à consommer avant le ${fmt(effDate(it))}</div>`:'';
+ return `<div class="swipe"><div class="swbg"><span>🗑️ Supprimer</span><span>Supprimer 🗑️</span></div><div class="prod ${c}" data-open="${it.id}">${im}<div class="pi"><div class="pn">${esc(it.name)}</div>
+ <div class="pm">${esc(it.brand||'—')} · ${L.e} ${esc(L.n)}</div><div style="margin:0 0 6px"><span class="cc" style="--h:${catHue(it.cat||'autre')}">${C.e} ${esc(C.n)}</span></div>
+ <span class="pill ${c}">${it.type} ${fmt(it.date)} · ${t}</span>${op}</div>
  <div class="pq"><div class="step"><button data-q="-1" data-id="${it.id}">−</button><b>${it.qty}</b><button data-q="1" data-id="${it.id}">+</button></div></div></div></div>`}
+function renderHome(){
+ const nb=S.items.filter(isBad).length,ns=S.items.filter(isSoon).length,tot=S.items.reduce((a,i)=>a+i.qty,0);
+ $('kBad').textContent=nb;$('kSoon').textContent=ns;$('kAll').textContent=S.items.length;
+ $('hsub').textContent=S.items.length?tot+' unité'+(tot>1?'s':'')+' · '+S.items.length+' lot'+(S.items.length>1?'s':'')+(nb+ns?' · '+(nb+ns)+' à surveiller':' · tout est en ordre'):'Commencez par ajouter un produit';
+ const nw=[...S.items].sort((a,b)=>(b.added||0)-(a.added||0)).slice(0,5);
+ $('homeNew').innerHTML=nw.length?nw.map(cardHtml).join(''):'<div class="empty"><div>🛒</div>Aucun produit pour le moment.<br>Touchez « Ajouter » pour commencer.</div>';
+ const pr=[...S.items].sort(byDate).filter(i=>daysLeft(effDate(i))<=S.soon).slice(0,3);
+ $('homeSoon').innerHTML=pr.length?pr.map(cardHtml).join(''):'<div class="empty" style="padding:22px">✅ Rien d’urgent pour le moment.</div>';
+ const need=S.backup==='both'&&!(S.driveUrl&&S.driveKey);$('banner').style.display=need?'block':'none';$('banner').textContent='☁️ Configurez la synchronisation Google Drive (touchez ici)';
+}
 function render(){
+ $('catTiles').innerHTML=[{id:'all',e:'🗂️',n:'Tous'},...S.cats].map(c=>{const n=c.id==='all'?S.items.length:S.items.filter(i=>(i.cat||'autre')===c.id).length;
+  return `<button class="ctile ${cf===c.id?'on':''}" style="--h:${c.id==='all'?160:catHue(c.id)}" data-ct="${esc(c.id)}"><span class="ce">${c.e}</span><span class="cl">${esc(c.n)}</span><span class="cn">${n}</span></button>`}).join('');
  $('chips').innerHTML=[{id:'all',e:'🗂️',n:'Tous les lieux'},...S.locs].map(l=>{const c=l.id==='all'?S.items.length:S.items.filter(i=>i.loc===l.id).length;
   return `<button class="chip ${lf===l.id?'on':''}" data-f="${esc(l.id)}">${l.e} ${esc(l.n)} · ${c}</button>`}).join('');
  const nb=S.items.filter(isBad).length,ns=S.items.filter(isSoon).length;
  $('sBad').textContent=nb;$('sSoon').textContent=ns;$('sAll').textContent=S.items.length;
  document.querySelectorAll('#seg .stat').forEach(b=>b.classList.toggle('on',b.dataset.s===sf));
- $('subt').textContent=S.items.length?S.items.length+' lot'+(S.items.length>1?'s':'')+' en stock'+(nb+ns?' · '+(nb+ns)+' à surveiller':' · tout est en ordre'):'Aucun produit pour le moment';
+ $('subt').textContent=S.items.length+' lot'+(S.items.length>1?'s':'');
  const items=visible();
  $('count').textContent=items.length+' résultat'+(items.length>1?'s':'');
  let html='',last=null;const grouped=$('sort').value==='cat';
  items.forEach(it=>{const ci=it.cat||'autre';if(grouped&&ci!==last){last=ci;const C=catOf(ci);html+=`<div class="ghead">${C.e} ${esc(C.n)} · ${items.filter(x=>(x.cat||'autre')===ci).length}</div>`}html+=cardHtml(it)});
  $('list').innerHTML=items.length?html:`<div class="empty"><div>🥗</div>Aucun produit ne correspond.</div>`;
- const need=S.backup==='both'&&!(S.driveUrl&&S.driveKey);$('banner').style.display=need?'block':'none';$('banner').textContent='☁️ Configurez la synchronisation Google Drive (touchez ici)';
+ renderHome();
 }
-$('q').addEventListener('input',render);$('sort').onchange=render;$('catSel').onchange=render;
+$('q').addEventListener('input',render);$('sort').onchange=render;
+$('catTiles').onclick=e=>{const b=e.target.closest('[data-ct]');if(b){cf=(cf===b.dataset.ct&&cf!=='all')?'all':b.dataset.ct;render()}};
+$('kpis').onclick=e=>{const k=e.target.closest('[data-kpi]');if(k){sf=k.dataset.kpi;lf='all';cf='all';$('q').value='';go('stock')}};
+$('qaIn').onclick=()=>{go('in');setTimeout(()=>$('btnScan').click(),150)};
+$('qaOut').onclick=()=>{go('out');setTimeout(()=>$('btnScanOut').click(),150)};
+document.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(g&&!g.classList.contains('tab'))go(g.dataset.go)});
 $('seg').onclick=e=>{const b=e.target.closest('.stat');if(b){sf=(sf===b.dataset.s&&sf!=='all')?'all':b.dataset.s;render()}};
 $('chips').onclick=e=>{const b=e.target.closest('.chip');if(b){lf=b.dataset.f;render()}};
-$('list').onclick=async e=>{
+const listClick=async e=>{
  const q=e.target.closest('[data-q]');
  if(q){const it=S.items.find(i=>i.id===q.dataset.id);if(!it)return;if(+q.dataset.q<0){await removeOne(it.id,true)}else{it.qty++;await save();render()}return}
  const z=e.target.closest('[data-zoom]');if(z&&!swiped){openLb(z.dataset.zoom);return}
  const o=e.target.closest('[data-open]');if(o&&!swiped)openSheet(o.dataset.open)};
+['list','homeNew','homeSoon'].forEach(id=>{$(id).onclick=listClick});
 // Suppression par balayage (gauche→droite ou droite→gauche)
 let swiped=false;
 async function deleteLot(id){const it=S.items.find(i=>i.id===id);if(!it)return;S.items=S.items.filter(i=>i!==it);await save();render();
  toast('Supprimé : '+it.name,'Annuler',async()=>{S.items.push(it);await save();render()})}
-(()=>{const L=$('list');let st=null;
+const attachSwipe=L=>{let st=null;
  L.addEventListener('pointerdown',e=>{const c=e.target.closest('.swipe .prod');if(!c||e.target.closest('button'))return;st={c,x:e.clientX,y:e.clientY,dx:0,on:false,id:e.pointerId};swiped=false});
  L.addEventListener('pointermove',e=>{if(!st)return;const dx=e.clientX-st.x,dy=e.clientY-st.y;
   if(!st.on){if(Math.abs(dx)>12&&Math.abs(dx)>Math.abs(dy)*1.4){st.on=true;st.c.classList.add('drag');try{st.c.setPointerCapture(st.id)}catch(_){}}else return}
@@ -376,7 +478,8 @@ async function deleteLot(id){const it=S.items.find(i=>i.id===id);if(!it)return;S
   if(st.on){swiped=true;setTimeout(()=>{swiped=false},400);c.classList.remove('drag');
    if(Math.abs(st.dx)>w*.38){c.style.transform='translateX('+(st.dx>0?w:-w)+'px)';const id=c.dataset.open;setTimeout(()=>deleteLot(id),180)}else c.style.transform=''}
   st=null};
- L.addEventListener('pointerup',end);L.addEventListener('pointercancel',end)})();
+ L.addEventListener('pointerup',end);L.addEventListener('pointercancel',end)};
+['list','homeNew','homeSoon'].forEach(id=>attachSwipe($(id)));
 // Visionneuse de photo : agrandissement automatique puis retour
 function openLb(src){if(!src)return;const i=$('lbImg');i.src=src;$('lb').showModal();requestAnimationFrame(()=>requestAnimationFrame(()=>$('lb').classList.add('on')))}
 const closeLb=()=>{$('lb').classList.remove('on');setTimeout(()=>{if($('lb').open)$('lb').close()},220)};
@@ -385,11 +488,12 @@ $('lb').addEventListener('close',()=>$('lb').classList.remove('on'));
 document.addEventListener('click',e=>{const z=e.target.closest('#pthumb[data-zoom],#sThumb[data-zoom]');if(z)openLb(z.dataset.zoom)});
 
 // ---------- Entrée ----------
+function buildCatPick(){$('catPick').innerHTML=S.cats.map(c=>`<button class="ctile ${$('cat').value===c.id?'on':''}" style="--h:${catHue(c.id)}" data-cp="${esc(c.id)}"><span class="ce">${c.e}</span><span class="cl">${esc(c.n)}</span></button>`).join('')}
+function syncCatPick(){document.querySelectorAll('#catPick .ctile').forEach(b=>b.classList.toggle('on',b.dataset.cp===$('cat').value))}
+$('catPick').onclick=e=>{const b=e.target.closest('[data-cp]');if(b){$('cat').value=b.dataset.cp;syncCatPick()}};
 function fillCats(){const o=S.cats.map(c=>`<option value="${esc(c.id)}">${c.e} ${esc(c.n)}</option>`).join('');
- const v=$('cat').value,sv=$('sCat').value,cv=$('catSel').value;$('cat').innerHTML=o;$('sCat').innerHTML=o;
- if(S.cats.some(c=>c.id===v))$('cat').value=v;if(S.cats.some(c=>c.id===sv))$('sCat').value=sv;
- $('catSel').innerHTML='<option value="all">Toutes catégories</option>'+S.cats.map(c=>`<option value="${esc(c.id)}">${c.e} ${esc(c.n)}</option>`).join('');
- if(cv==='all'||S.cats.some(c=>c.id===cv))$('catSel').value=cv||'all'}
+ const v=$('cat').value,sv=$('sCat').value;$('cat').innerHTML=o;$('sCat').innerHTML=o;
+ if(S.cats.some(c=>c.id===v))$('cat').value=v;if(S.cats.some(c=>c.id===sv))$('sCat').value=sv;buildCatPick()}
 function fillLocChips(){fillCats();$('locChips').innerHTML=S.locs.map(l=>`<button class="chip ${curLoc===l.id?'on':''}" data-l="${esc(l.id)}">${l.e} ${esc(l.n)}</button>`).join('');
  $('sLoc').innerHTML=S.locs.map(l=>`<option value="${esc(l.id)}">${l.e} ${esc(l.n)}</option>`).join('')}
 $('locChips').onclick=e=>{const b=e.target.closest('[data-l]');if(b){curLoc=b.dataset.l;fillLocChips()}};
@@ -408,7 +512,7 @@ function guess(p){
   return{type:'DLC',loc:'frigo',why:'Produit frais → DLC (proposé automatiquement)'};
  if(/dair|yogurt|cheese|fromage|laitier|egg|butter|beurre|juice|jus/.test(t))return{type:'DDM',loc:'frigo',why:'Produit laitier ou frais → DDM (proposé automatiquement)'};
  return{type:'DDM',loc:'garde',why:'Produit sec ou de conservation → DDM (proposé automatiquement)'}}
-function applyKnown(k,why){if(k.name)$('name').value=k.name;if(k.brand!=null)$('brand').value=k.brand;img=k.img||'';imgBig=k.imgBig||k.img||'';if(k.cat&&S.cats.some(c=>c.id===k.cat))$('cat').value=k.cat;setThumb();
+function applyKnown(k,why){if(k.name)$('name').value=k.name;if(k.brand!=null)$('brand').value=k.brand;img=k.img||'';imgBig=k.imgBig||k.img||'';if(k.cat&&S.cats.some(c=>c.id===k.cat)){$('cat').value=k.cat;syncCatPick()}setThumb();
  if(k.type)setType(k.type,why);if(k.loc&&S.locs.some(l=>l.id===k.loc)){curLoc=k.loc;fillLocChips()}}
 function stockNote(code){const lots=S.items.filter(i=>i.barcode===code).sort(byDate),b=$('inStock');
  if(!code||!lots.length){b.style.display='none';return}
@@ -443,10 +547,10 @@ $('btnScan').onclick=async()=>{const c=await scanBarcode();if(c)lookup(c)};
 
 // Ajout d'un lot (fusion si même produit, même date, même lieu)
 function addLot(o,n){
- const key=x=>(x.barcode||(x.name||'').toLowerCase().trim())+'|'+x.date+'|'+x.loc+'|'+x.type;
+ const key=x=>(x.barcode||(x.name||'').toLowerCase().trim())+'|'+x.date+'|'+x.loc+'|'+x.type+'|'+(x.openedAt||'');
  const ex=S.items.find(i=>key(i)===key(o));
  if(ex){ex.qty+=n;return true}
- S.items.push({id:newId(),name:o.name,brand:o.brand||'',loc:o.loc,type:o.type,date:o.date,qty:n,img:o.img||'',imgBig:o.imgBig||'',cat:o.cat||'autre',barcode:o.barcode||'',added:Date.now()});return false}
+ S.items.push({id:newId(),name:o.name,brand:o.brand||'',loc:o.loc,type:o.type,date:o.date,qty:n,img:o.img||'',imgBig:o.imgBig||'',cat:o.cat||'autre',barcode:o.barcode||'',added:Date.now(),...(o.openedAt?{openedAt:o.openedAt,openDays:o.openDays}:{})});return false}
 $('btnAdd').onclick=async()=>{
  const name=$('name').value.trim(),date=parseFr($('date').value);
  if(!name){toast('Indiquez le nom du produit');return}
@@ -454,7 +558,7 @@ $('btnAdd').onclick=async()=>{
  const code=$('code').value.replace(/\D/g,'');
  const merged=addLot({name,brand:$('brand').value.trim(),loc:curLoc,type:curType,date,img,imgBig,cat:$('cat').value,barcode:code},qty);
  if(code)S.known[code]={name,brand:$('brand').value.trim(),img,imgBig,type:curType,loc:curLoc,cat:$('cat').value};
- ['code','name','brand','date'].forEach(i=>$(i).value='');img='';imgBig='';$('cat').value='autre';setThumb();setQty(1);$('inStock').style.display='none';ocrMsg('');setType('DLC','');
+ ['code','name','brand','date'].forEach(i=>$(i).value='');img='';imgBig='';$('cat').value='autre';syncCatPick();setThumb();setQty(1);$('inStock').style.display='none';ocrMsg('');setType('DLC','');
  await save();render();toast(merged?'Quantité ajoutée à un lot existant ✔':'Ajouté au stock ✔');await catchUp();
 };
 
@@ -463,7 +567,7 @@ const outMsg=(t,c,undo)=>{const e=$('outMsg');e.style.display=t?'block':'none';e
  const u=$('undoBtn');if(u)u.onclick=undoLast};
 async function removeOne(id,quiet){
  const it=S.items.find(i=>i.id===id);if(!it)return;
- S.log.unshift({t:Date.now(),name:it.name,brand:it.brand,loc:it.loc,type:it.type,date:it.date,img:it.img,imgBig:it.imgBig,cat:it.cat,barcode:it.barcode});S.log=S.log.slice(0,20);
+ S.log.unshift({t:Date.now(),name:it.name,brand:it.brand,loc:it.loc,type:it.type,date:it.date,img:it.img,imgBig:it.imgBig,cat:it.cat,openedAt:it.openedAt,openDays:it.openDays,barcode:it.barcode});S.log=S.log.slice(0,20);
  it.qty--;const left=it.qty;if(it.qty<=0)S.items=S.items.filter(i=>i!==it);
  await save();render();logUI();
  outMsg('✅ Retiré : '+it.name+' ('+it.type+' '+fmt(it.date)+') — '+(left>0?'il en reste '+left+' dans ce lot':'lot épuisé'),'ok',true);
@@ -483,20 +587,40 @@ function logUI(){$('logList').innerHTML=S.log.length?S.log.slice(0,10).map(l=>{c
  return `<div class="prod" style="padding:10px"><div class="thumb" style="width:46px;height:46px;font-size:22px">${L.e}</div><div class="pi"><div class="pn" style="font-size:14px">${esc(l.name)}</div><div class="pm" style="margin:2px 0 0">${l.type} ${fmt(l.date)} · retiré le ${p2(d.getDate())}/${p2(d.getMonth()+1)} à ${p2(d.getHours())}:${p2(d.getMinutes())}</div></div></div>`}).join(''):'<div class="empty" style="padding:20px">Aucune sortie pour le moment.</div>'}
 
 // ---------- Fiche produit ----------
-function openSheet(id){const it=S.items.find(i=>i.id===id);if(!it)return;sheetId=id;const L=locOf(it.loc);
+(()=>{const el=$('sheet');el.showModal=()=>{el.classList.add('on');document.body.style.overflow='hidden'};el.close=()=>{el.classList.remove('on');document.body.style.overflow=''}})();
+const curItem=()=>S.items.find(i=>i.id===sheetId);
+function openCardUI(it){const d=it.openDays||openDaysOf(it.cat);
+ if(it.openedAt){const lim=openEst(it)>=it.date;
+  $('openCard').innerHTML=`<div class="oh">📂 Produit ouvert le ${fmt(it.openedAt)}</div>
+  <div class="oest">À consommer avant le <b>${fmt(effDate(it))}</b><small>${lim?'Estimation limitée par la date de l’emballage ('+it.type+')':'Estimation : '+d+' jour'+(d>1?'s':'')+' après ouverture'}</small></div>
+  <div class="row" style="align-items:center;margin-top:12px"><span class="hint" style="margin:0">Durée après ouverture</span><input id="oDays" type="number" min="1" max="365" inputmode="numeric" value="${d}" style="width:86px;flex:none;text-align:center"><span>jours</span></div>
+  <button class="btn out" id="oCancel" style="margin-top:12px">Annuler l’ouverture</button>`}
+ else{$('openCard').innerHTML=`<div class="oh">📦 Produit non ouvert</div>
+  <div class="oest">Une fois ouvert : environ <b>${d} jour${d>1?'s':''}</b><small>Estimation selon la catégorie, à adapter selon l’emballage</small></div>
+  <button class="btn sec" id="oOpen" style="margin-top:12px">📂 Marquer ${it.qty>1?'1 unité':'le produit'} comme ouvert</button>`}}
+$('openCard').onclick=async e=>{const it=curItem();if(!it)return;
+ if(e.target.closest('#oOpen')){const t=isoToday();let tg=it;
+  if(it.qty>1){it.qty--;tg=Object.assign({},it,{id:newId(),qty:1,openedAt:t,openDays:openDaysOf(it.cat)});S.items.push(tg)}else{it.openedAt=t;it.openDays=openDaysOf(it.cat)}
+  await save();render();openSheet(tg.id,true);toast('Produit ouvert · à consommer avant le '+fmt(effDate(tg)))}
+ if(e.target.closest('#oCancel')){delete it.openedAt;delete it.openDays;await save();render();openSheet(it.id,true)}};
+$('openCard').onchange=async e=>{if(e.target.id!=='oDays')return;const it=curItem();if(!it)return;it.openDays=Math.max(1,Math.min(365,parseInt(e.target.value)||1));await save();render();openSheet(it.id,true)};
+function openSheet(id,keep){const it=S.items.find(i=>i.id===id);if(!it)return;sheetId=id;const L=locOf(it.loc),C=catOf(it.cat),st=status(it);
  $('sThumb').innerHTML=it.img?`<img src="${esc(it.img)}" style="width:100%;height:100%;object-fit:contain;border-radius:14px" alt="">`:L.e;
- if(it.img)$('sThumb').dataset.zoom=it.imgBig||it.img;else delete $('sThumb').dataset.zoom;$('sTitle').textContent=it.name;$('sMeta').textContent=(it.barcode?'Code '+it.barcode:'Sans code-barres')+' · '+status(it)[1];
- $('sName').value=it.name;$('sBrand').value=it.brand||'';$('sLoc').value=it.loc;$('sCat').value=it.cat||'autre';$('sType').value=it.type;$('sDate').value=fmt(it.date);$('sQty').textContent=it.qty;$('sheet').showModal()}
+ if(it.img)$('sThumb').dataset.zoom=it.imgBig||it.img;else delete $('sThumb').dataset.zoom;
+ $('sTitle').textContent=it.name;$('sMeta').textContent=(it.brand||'Sans marque')+' · '+L.e+' '+L.n+' · '+C.e+' '+C.n;
+ $('sPill').className='pill '+st[0];$('sPill').textContent=it.type+' '+fmt(it.date)+' · '+st[1];
+ $('sCode').textContent=it.barcode?'Code-barres '+it.barcode:'Sans code-barres';
+ if(!keep){$('sName').value=it.name;$('sBrand').value=it.brand||'';$('sLoc').value=it.loc;$('sCat').value=it.cat||'autre';$('sType').value=it.type;$('sDate').value=fmt(it.date);$('sQty').textContent=it.qty}
+ openCardUI(it);$('sheet').showModal();if(!keep)$('sheet').scrollTop=0}
 $('sMinus').onclick=()=>{const v=Math.max(1,+$('sQty').textContent-1);$('sQty').textContent=v};
 $('sPlus').onclick=()=>{$('sQty').textContent=+$('sQty').textContent+1};
-$('sSave').onclick=async()=>{const it=S.items.find(i=>i.id===sheetId),d=parseFr($('sDate').value),n=$('sName').value.trim();
+$('sSave').onclick=async()=>{const it=curItem(),d=parseFr($('sDate').value),n=$('sName').value.trim();
  if(!it)return;if(!n||!d){toast('Nom et date valide obligatoires');return}
  Object.assign(it,{name:n,brand:$('sBrand').value.trim(),loc:$('sLoc').value,cat:$('sCat').value,type:$('sType').value,date:d,qty:+$('sQty').textContent});
  await save();render();$('sheet').close();toast('Modifié ✔')};
 $('sOne').onclick=async()=>{$('sheet').close();await removeOne(sheetId)};
 $('sDel').onclick=async()=>{if(!confirm('Supprimer ce lot ?'))return;S.items=S.items.filter(i=>i.id!==sheetId);await save();render();$('sheet').close()};
 $('sClose').onclick=()=>$('sheet').close();
-$('sheet').addEventListener('click',e=>{if(e.target===$('sheet'))$('sheet').close()});
 
 // ---------- Lecture de la date (ML Kit, sur le téléphone) ----------
 const MONTHS={JAN:1,JANV:1,FEV:2,FEB:2,FEVR:2,MAR:3,MARS:3,AVR:4,APR:4,AVRIL:4,MAI:5,MAY:5,JUN:6,JUIN:6,JUL:7,JUIL:7,AOU:8,AUG:8,AOUT:8,SEP:9,SEPT:9,OCT:10,NOV:11,DEC:12};
@@ -575,10 +699,10 @@ async function resched(){
   if(p.notifications.length)await L.cancel({notifications:p.notifications.map(n=>({id:n.id}))});
   const [h,m]=(S.hour||'09:00').split(':').map(Number),now=Date.now(),list=[];
   S.items.forEach(it=>{[...new Set(S.days)].forEach(d=>{
-   const at=new Date(it.date+'T00:00:00');at.setDate(at.getDate()-d);at.setHours(h,m,0,0);
+   const at=new Date(effDate(it)+'T00:00:00');at.setDate(at.getDate()-d);at.setHours(h,m,0,0);
    if(at.getTime()<=now)return;const Lc=locOf(it.loc);
    list.push({id:hash(it.id+'|'+d),title:(it.type==='DLC'?'⚠️ DLC : ':'🔔 DDM : ')+it.name,
-    body:d===0?(it.type==='DLC'?'À consommer aujourd’hui !':'Date de préférence atteinte aujourd’hui')+' ('+Lc.n+')':'Dans '+d+' jour'+(d>1?'s':'')+' – '+fmt(it.date)+' ('+Lc.n+')',
+    body:d===0?(it.type==='DLC'?'À consommer aujourd’hui !':'Date de préférence atteinte aujourd’hui')+' ('+Lc.n+')':'Dans '+d+' jour'+(d>1?'s':'')+' – '+fmt(effDate(it))+' ('+Lc.n+')',
     schedule:{at,allowWhileIdle:true}})})});
   list.sort((a,b)=>a.schedule.at-b.schedule.at);
   if(list.length)await L.schedule({notifications:list.slice(0,400)});
@@ -587,7 +711,7 @@ async function resched(){
 }
 async function catchUp(){
  const L=P.LocalNotifications;if(!L)return;
- try{const k=isoToday(),due=S.items.filter(i=>daysLeft(i.date)<=0&&!S.alerted[i.id+'|'+k]);
+ try{const k=isoToday(),due=S.items.filter(i=>daysLeft(effDate(i))<=0&&!S.alerted[i.id+'|'+k]);
   if(!due.length)return;
   const r=await L.checkPermissions();if(r.display!=='granted')return;
   due.forEach(i=>S.alerted[i.id+'|'+k]=1);
@@ -595,7 +719,7 @@ async function catchUp(){
   await persist(true);
   await L.schedule({notifications:[{id:hash('c'+Date.now()),
    title:due.length>1?'⚠️ '+due.length+' produits à surveiller':(due[0].type==='DLC'?'⚠️ DLC : ':'🔔 DDM : ')+due[0].name,
-   body:due.slice(0,5).map(i=>i.name+(daysLeft(i.date)<0?' (périmé)':' (aujourd’hui)')).join(', ')}]});
+   body:due.slice(0,5).map(i=>i.name+(daysLeft(effDate(i))<0?' (périmé)':' (aujourd’hui)')).join(', ')}]});
  }catch(e){}
 }
 async function permUI(){
@@ -614,14 +738,17 @@ $('btnTest').onclick=async()=>{const L=P.LocalNotifications;if(!L){toast('Test p
  await L.schedule({notifications:[{id:1,title:'Test d’alerte',body:'Les notifications fonctionnent ✔',schedule:{at:new Date(Date.now()+5000),allowWhileIdle:true}}]});toast('Alerte dans 5 secondes…')};
 
 // ---------- Réglages ----------
-const STD=[30,15,7,3,2,1,0];
-function dayUI(){const all=[...new Set([...STD,...S.days])].sort((a,b)=>b-a);
- $('dayList').innerHTML=all.map(d=>`<label class="chk"><input type="checkbox" data-d="${d}" ${S.days.includes(d)?'checked':''}><span>${d===0?'Le jour même':d===1?'1 jour avant':d+' jours avant'}</span></label>`).join('');
+function dayUI(){const ds=[...S.days].sort((a,b)=>b-a);$('rCount').textContent=ds.length;
+ $('dayList').innerHTML=ds.length?ds.map((d,i)=>`<div class="rrow"><span class="rn">${i+1}</span><span class="rl">Rappel</span><input type="number" min="0" max="365" inputmode="numeric" value="${d}" data-di="${i}"><span class="rl">jour${d>1?'s':''} avant</span></div>`).join(''):'<p class="hint">Aucun rappel : vous ne recevrez pas d’alerte.</p>';
  $('hour').value=S.hour;$('soon').value=S.soon;$('bk').value=S.backup}
 function locUI(){$('locList').innerHTML=S.locs.map(l=>`<div class="locrow"><button class="ibtn" data-ic="${esc(l.id)}">${esc(l.e)}</button><input class="g" value="${esc(l.n)}" data-id="${esc(l.id)}"><button class="btn sec" style="width:auto" data-ld="${esc(l.id)}">🗑️</button></div>`).join('')}
-$('dayList').onchange=async e=>{const d=+e.target.dataset.d;if(isNaN(d))return;
- S.days=e.target.checked?[...new Set([...S.days,d])]:S.days.filter(x=>x!==d);await save();dayUI();render();permUI()};
-$('addDay').onclick=async()=>{const v=parseInt($('extraDay').value);if(isNaN(v)||v<0)return;if(!S.days.includes(v))S.days.push(v);$('extraDay').value='';await save();dayUI();permUI()};
+$('dayList').onchange=async e=>{const i=+e.target.dataset.di;if(isNaN(i))return;const ds=[...S.days].sort((a,b)=>b-a);
+ ds[i]=Math.max(0,Math.min(365,parseInt(e.target.value)||0));const u=[...new Set(ds)].sort((a,b)=>b-a);if(u.length<ds.length)toast('Ce délai existe déjà : rappel fusionné');
+ S.days=u;await save();dayUI();render();permUI()};
+const NEXTD=[30,14,10,7,5,3,2,1,0];
+$('rPlus').onclick=async()=>{if(S.days.length>=10){toast('10 rappels maximum');return}
+ let v=NEXTD.find(d=>!S.days.includes(d));if(v===undefined)v=Math.max(...S.days)+1;S.days=[...S.days,v].sort((a,b)=>b-a);await save();dayUI();render();permUI()};
+$('rMinus').onclick=async()=>{if(!S.days.length)return;S.days=[...S.days].sort((a,b)=>b-a);S.days.pop();await save();dayUI();render();permUI()};
 $('hour').onchange=async()=>{if($('hour').value){S.hour=$('hour').value;await save();permUI()}};
 $('soon').onchange=async()=>{S.soon=Math.max(1,parseInt($('soon').value)||7);await persist();render()};
 $('bk').onchange=async()=>{S.backup=$('bk').value;await persist(true);driveUI();render()};
@@ -642,14 +769,15 @@ $('locList').onchange=async e=>{const l=S.locs.find(x=>x.id===e.target.dataset.i
 $('addLoc').onclick=async()=>{const n=$('newN').value.trim();if(!n)return;S.locs.push({id:'l'+Date.now().toString(36),e:newIcon,n});$('newN').value='';newIcon='📦';$('newE').textContent='📦';await persist();locUI();fillLocChips();render()};
 
 // ---------- Catégories (réglages) ----------
-function catUI(){$('catList').innerHTML=S.cats.map(c=>`<div class="locrow"><button class="ibtn" data-cic="${esc(c.id)}">${esc(c.e)}</button><input class="g" value="${esc(c.n)}" data-cid="${esc(c.id)}"><button class="btn sec" style="width:auto" data-cd="${esc(c.id)}">🗑️</button></div>`).join('')}
+function catUI(){$('catList').innerHTML=S.cats.map(c=>`<div class="locrow"><button class="ibtn" data-cic="${esc(c.id)}">${esc(c.e)}</button><input class="g" value="${esc(c.n)}" data-cid="${esc(c.id)}"><input class="dn" type="number" min="1" max="365" inputmode="numeric" value="${openDaysOf(c.id)}" data-cdd="${esc(c.id)}" aria-label="Jours après ouverture"><span class="dl">j</span><button class="btn sec" style="width:auto" data-cd="${esc(c.id)}">🗑️</button></div>`).join('')}
 $('catList').onclick=async e=>{const ic=e.target.closest('[data-cic]');
  if(ic){pickIcon(async em=>{const c=S.cats.find(x=>x.id===ic.dataset.cic);if(c){c.e=em;await persist();catUI();fillCats();render()}});return}
  const d=e.target.closest('[data-cd]');if(!d)return;const id=d.dataset.cd;
  if(id==='autre'){toast('La catégorie « Autre » est conservée');return}
  if(S.items.some(i=>(i.cat||'autre')===id)){toast('Déplacez d’abord les produits de cette catégorie');return}
  if(!confirm('Supprimer cette catégorie ?'))return;S.cats=S.cats.filter(c=>c.id!==id);await persist();catUI();fillCats();render()};
-$('catList').onchange=async e=>{const c=S.cats.find(x=>x.id===e.target.dataset.cid);if(!c)return;const v=e.target.value.trim();if(!v){e.target.value=c.n;return}c.n=v;await persist();fillCats();render()};
+$('catList').onchange=async e=>{if(e.target.dataset.cdd){const c=S.cats.find(x=>x.id===e.target.dataset.cdd);if(c){c.d=Math.max(1,Math.min(365,parseInt(e.target.value)||5));e.target.value=c.d;await save();render()}return}
+ const c=S.cats.find(x=>x.id===e.target.dataset.cid);if(!c)return;const v=e.target.value.trim();if(!v){e.target.value=c.n;return}c.n=v;await persist();fillCats();render()};
 let newCIcon='🏷️';$('newCE').onclick=()=>pickIcon(e=>{newCIcon=e;$('newCE').textContent=e});
 $('addCat').onclick=async()=>{const n=$('newCN').value.trim();if(!n)return;const at=S.cats.findIndex(c=>c.id==='autre');
  S.cats.splice(at<0?S.cats.length:at,0,{id:'c'+Date.now().toString(36),e:newCIcon,n});$('newCN').value='';newCIcon='🏷️';$('newCE').textContent='🏷️';await persist();catUI();fillCats();render()};
