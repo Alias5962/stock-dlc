@@ -162,6 +162,7 @@ main{padding:calc(14px + env(safe-area-inset-top)) 16px calc(104px + env(safe-ar
 .rl{font-size:15px}
 .dn{width:70px!important;flex:none;text-align:center;padding:10px 6px!important}
 .locrow .dl{align-self:center;font-size:12px;color:var(--mut);flex:none}
+#helpDlg dt{font-weight:750;margin-top:14px}#helpDlg dd{margin:3px 0 0;color:var(--mut);font-size:14px;line-height:1.45}
 </style>
 </head>
 <body>
@@ -169,7 +170,7 @@ main{padding:calc(14px + env(safe-area-inset-top)) 16px calc(104px + env(safe-ar
 
 <section class="screen on" id="s-home">
  <div class="hero">
-  <div class="htop"><div><h1>Gestion des stocks alimentaires</h1><div class="hsub" id="hsub"></div></div><button class="hbtn" data-go="set" aria-label="Réglages">⚙️</button></div>
+  <div class="htop"><div><h1>Gestion des stocks alimentaires</h1><div class="hsub" id="hsub"></div></div><div style="display:flex;gap:8px;flex:none"><button class="hbtn" id="helpBtn" aria-label="Aide" style="font-weight:800">?</button><button class="hbtn" data-go="set" aria-label="Réglages">⚙️</button></div></div>
  </div>
  <div class="kpis" id="kpis">
   <button class="kpi k-bad" data-kpi="bad"><span class="ki">⛔</span><b id="kBad">0</b>Périmés</button>
@@ -185,7 +186,8 @@ main{padding:calc(14px + env(safe-area-inset-top)) 16px calc(104px + env(safe-ar
 </section>
 
 <section class="screen" id="s-stock">
- <div class="phead"><h1>Produits</h1><span class="subt" id="subt" style="margin:0"></span></div>
+ <div class="phead"><h1>Produits</h1><button class="lnk" data-help>❓ Aide</button></div>
+ <div class="subt" id="subt" style="margin:-2px 2px 10px"></div>
  <div class="search"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="q" type="search" placeholder="Rechercher un produit, une marque, un code…" autocomplete="off"></div>
  <div class="ctiles" id="catTiles"></div>
  <div id="seg">
@@ -218,7 +220,7 @@ main{padding:calc(14px + env(safe-area-inset-top)) 16px calc(104px + env(safe-ar
   <button class="btn sec" id="btnOcr" style="margin-top:10px"><svg class="i" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>Lire la date avec l’appareil photo</button>
   <div id="ocrMsg" class="msg" style="display:none"></div>
   <label class="lbl">Quantité</label>
-  <div class="qrow"><span class="hint" style="margin:0">Nombre d’unités de ce lot</span><div class="step"><button id="qMinus">−</button><b id="qVal">1</b><button id="qPlus">+</button></div></div>
+  <div class="qrow"><span class="hint" style="margin:0">Nombre d’unités (même date)</span><div class="step"><button id="qMinus">−</button><b id="qVal">1</b><button id="qPlus">+</button></div></div>
   <button class="btn" id="btnAdd" style="margin-top:18px">Ajouter au stock</button>
  </div>
 </section>
@@ -229,7 +231,7 @@ main{padding:calc(14px + env(safe-area-inset-top)) 16px calc(104px + env(safe-ar
   <label class="lbl">Ou saisir le code-barres</label>
   <div class="row"><input class="g" id="codeOut" inputmode="numeric" placeholder="Numéro du code-barres"><button class="btn sec" id="btnOutManual" style="width:auto">Retirer</button></div>
   <div id="outMsg" class="msg" style="display:none"></div>
-  <p class="hint">Si plusieurs lots du même produit sont en stock, l’application vous propose de choisir. Le lot à la date la plus proche est recommandé.</p>
+  <p class="hint">Si le même produit est en stock avec des dates différentes, l’application vous propose de choisir. Celui dont la date est la plus proche est recommandé.</p>
  </div>
  <h2 style="font-size:16px;margin:18px 2px 8px">Dernières sorties</h2>
  <div id="logList"></div>
@@ -280,7 +282,12 @@ main{padding:calc(14px + env(safe-area-inset-top)) 16px calc(104px + env(safe-ar
   <div class="row"><button class="btn out g" id="btnBk">Sauvegarder</button><button class="btn out g" id="btnRs">Restaurer</button></div>
   <input type="file" id="fileIn" accept=".json,application/json" hidden>
  </div>
- <p class="hint" style="text-align:center">Gestion des stocks alimentaires · version 4.0</p>
+ <div class="card">
+  <h2 style="font-size:17px;margin:0 0 4px">❓ Aide</h2>
+  <p class="hint" style="margin:0 0 10px">Définitions des mots utilisés dans l’application : DLC, DDM, catégorie, lot, produit ouvert…</p>
+  <button class="btn sec" data-help>Ouvrir l’aide</button>
+ </div>
+ <p class="hint" style="text-align:center">Gestion des stocks alimentaires · version 4.1</p>
 </section>
 </main>
 
@@ -317,8 +324,8 @@ main{padding:calc(14px + env(safe-area-inset-top)) 16px calc(104px + env(safe-ar
 
 <!-- Choix du lot à retirer -->
 <dialog id="pick" class="mid">
- <h2 style="margin:0 0 4px;font-size:18px" id="pickT">Plusieurs lots en stock</h2>
- <p class="hint" style="margin:0 0 12px">Quel lot retirez-vous ?</p>
+ <h2 style="margin:0 0 4px;font-size:18px" id="pickT">Plusieurs dates en stock</h2>
+ <p class="hint" style="margin:0 0 12px">Lequel retirez-vous ? (même produit, dates différentes)</p>
  <div id="pickList"></div>
  <button class="btn out" onclick="document.getElementById('pick').close()">Annuler</button>
 </dialog>
@@ -328,6 +335,25 @@ main{padding:calc(14px + env(safe-area-inset-top)) 16px calc(104px + env(safe-ar
  <h2 style="margin:0 0 12px;font-size:18px">Choisir une icône</h2>
  <div class="igrid" id="igrid"></div>
  <button class="btn out" style="margin-top:12px" onclick="document.getElementById('iconDlg').close()">Fermer</button>
+</dialog>
+
+<dialog id="helpDlg" class="mid">
+ <h2 style="margin:0 0 4px;font-size:19px">❓ Aide : les mots utilisés</h2>
+ <dl style="margin:0">
+  <dt>📦 Produit</dt><dd>Un article de votre stock (un pot de yaourt, un paquet de biscuits). La quantité indique combien d’unités vous en avez.</dd>
+  <dt>🏷️ Catégorie</dt><dd>Le type de produit : Frais, Yaourts, Biscuits, Boissons, Épicerie… Elle sert à chercher et à classer. Elle est proposée automatiquement au scan, mais vous pouvez la corriger sur la fiche du produit : l’application s’en souvient pour la prochaine fois.</dd>
+  <dt>📍 Emplacement</dt><dd>L’endroit où le produit est rangé : frigo, congélateur, garde-manger… Vous pouvez en ajouter et changer leur icône dans les réglages.</dd>
+  <dt>📅 DLC</dt><dd>Date Limite de Consommation (« à consommer jusqu’au »). Sur les produits très périssables : viande, poisson, plats frais. Après cette date, il ne faut plus les consommer.</dd>
+  <dt>📅 DDM</dt><dd>Date de Durabilité Minimale (« à consommer de préférence avant »). Sur les produits secs ou de longue conservation. Après cette date, le produit est souvent encore consommable, mais sa qualité peut baisser.</dd>
+  <dt>🧾 Lot : même produit, dates différentes</dt><dd>Si vous avez le même produit avec des dates différentes (3 yaourts au 20/11 et 2 yaourts au 05/12), l’application les range sur deux lignes, appelées « lots ». Cela permet de consommer d’abord les plus anciens, et de retirer le bon en scannant. Si la date est identique, les quantités s’additionnent sur la même ligne.</dd>
+  <dt>⏳ Bientôt périmé</dt><dd>Produit dont la date arrive dans moins de X jours. X se règle dans les réglages (7 jours par défaut).</dd>
+  <dt>⛔ Périmé</dt><dd>Produit dont la date est dépassée.</dd>
+  <dt>📂 Produit ouvert</dt><dd>Sur la fiche, « Marquer comme ouvert » calcule une date estimée de consommation (par exemple 3 jours pour un yaourt), sans dépasser la date de l’emballage. C’est une estimation : fiez-vous toujours à l’emballage.</dd>
+  <dt>🔔 Rappels</dt><dd>Alertes envoyées avant la date (par exemple 7 jours avant, 1 jour avant et le jour même). Vous choisissez leur nombre et leurs délais dans les réglages.</dd>
+  <dt>➕ Ajouter / ➖ Sortie</dt><dd>Ajouter : enregistrer un produit (scan ou saisie). Sortie : retirer une unité en scannant à nouveau son code-barres.</dd>
+  <dt>☁️ Synchronisation Drive</dt><dd>Copie automatique de vos données sur votre Google Drive, pour les retrouver sur un autre téléphone.</dd>
+ </dl>
+ <button class="btn" style="margin-top:16px" onclick="document.getElementById('helpDlg').close()">Fermer</button>
 </dialog>
 
 <!-- Cadrage de la date -->
@@ -350,11 +376,19 @@ let S=JSON.parse(JSON.stringify(DEF)),lf='all',sf='all',img='',imgBig='',cf='all
 const locOf=id=>S.locs.find(l=>l.id===id)||{e:'📦',n:id||'?'};
 const catOf=id=>S.cats.find(c=>c.id===id)||S.cats.find(c=>c.id==='autre')||{e:'📦',n:'Autre'};
 function guessCat(t){t=(t||'').toLowerCase();
- const R=[['surgeles',/frozen|surgel|ice-cream|sorbet|glace/],['yaourts',/yogurt|yoghurt|yaourt|dairy-dessert|fromage-blanc|skyr|petit-suisse|milk|\blait\b|beurre|butter|cream|creme|dessert/],['fromages',/cheese|fromage|emmental|camembert|mozzarella|raclette/],
- ['viandes',/meat|poultry|beef|pork|veal|lamb|fish|seafood|salmon|viande|poisson|poulet|steak|saumon|thon\b/],['traiteur',/charcut|\bham\b|jambon|sausage|saucisse|delicatessen|ready-meal|prepared|traiteur|sandwich|pizza|quiche|lardon|rillette/],
- ['fruits',/fruit|vegetable|legume|salad|salade|tomate|carotte|pomme\b/],['boissons',/beverage|drink|water|\beau\b|juice|\bjus\b|soda|wine|\bvin\b|beer|biere|sirop|boisson/],
- ['biscuits',/biscuit|cookie|cake|gateau|pastr|viennois|gaufre|wafer|cereal-bar|barre|brioche|madeleine|sabl/],['sucre',/chocolate|chocolat|confectioner|sweet|bonbon|confiture|\bjam\b|miel|honey|nutella|spread/],
- ['petitdej',/breakfast|cereal|muesli|granola|corn-flakes|cafe\b|coffee|\btea\b/],['epicerie',/pasta|\bpates\b|\briz\b|rice|canned|conserve|flour|farine|sauce|condiment|\boil\b|huile|spice|epice|soup|soupe|lentil|bean|sugar/],
+ const R=[['surgeles',/frozen|surgel|ice-cream|sorbet|glace/],
+ ['boissons',/caf[eé]|coffee|latte|cappuccino|expresso|espresso|\bth[eé](?![a-zà-ÿ])|\btea\b|infusion|chocolat chaud|hot-chocolate|cacao/],
+ ['yaourts',/yogurt|yoghurt|yaourt|dairy-dessert|fromage-blanc|fromage blanc|skyr|petit-suisse|en:milks|beurre|butter|en:creams|creme fra|dessert/],
+ ['fromages',/cheese|fromage|emmental|camembert|mozzarella|raclette/],
+ ['viandes',/meat|poultry|beef|pork|veal|lamb|fish|seafood|salmon|viande|poisson|poulet|steak|saumon|thon\b/],
+ ['traiteur',/charcut|\bham\b|jambon|sausage|saucisse|delicatessen|ready-meal|prepared|traiteur|sandwich|pizza|quiche|lardon|rillette/],
+ ['fruits',/fruit|vegetable|legume|salad|salade|tomate|carotte|pomme\b/],
+ ['boissons',/beverage|drink|water|\beau\b|juice|\bjus\b|soda|wine|\bvin\b|beer|biere|sirop|boisson/],
+ ['biscuits',/biscuit|cookie|cake|gateau|pastr|viennois|gaufre|wafer|cereal-bar|barre|brioche|madeleine|sabl/],
+ ['sucre',/chocolate|chocolat|confectioner|sweet|bonbon|confiture|\bjam\b|miel|honey|nutella|spread/],
+ ['yaourts',/\blait\b/],
+ ['petitdej',/breakfast|cereal|muesli|granola|corn-flakes/],
+ ['epicerie',/pasta|\bpates\b|\briz\b|rice|canned|conserve|flour|farine|sauce|condiment|\boil\b|huile|spice|epice|soup|soupe|lentil|bean|sugar/],
  ['frais',/fresh|chilled|frais/]];
  for(const[id,re]of R)if(re.test(t)&&S.cats.some(c=>c.id===id))return id;return'autre'}
 
@@ -365,6 +399,8 @@ async function load(){
  S.known=S.known||{};S.log=S.log||[];S.alerted=S.alerted||{};
  if(!Array.isArray(S.cats)||!S.cats.length)S.cats=JSON.parse(JSON.stringify(DEF.cats));
  S.items.forEach(i=>{if(!i.cat)i.cat=guessCat(i.name)});
+ if(!S.fixCafe){const re=/caf[eé]|coffee|cappuccino|latte|expresso|espresso/i,ok=S.cats.some(c=>c.id==='boissons');
+  if(ok){S.items.forEach(i=>{if(i.cat==='yaourts'&&re.test(i.name||''))i.cat='boissons'});Object.values(S.known).forEach(k=>{if(k.cat==='yaourts'&&re.test(k.name||''))k.cat='boissons'})}S.fixCafe=1}
  if(!S.locs.some(l=>l.id===curLoc))curLoc=S.locs[0].id;
 }
 async function persist(noSync){if(!noSync)S.updated=Date.now();const v=JSON.stringify(S);try{if(P.Preferences)await P.Preferences.set({key:'stockdlc',value:v});else localStorage.setItem('stockdlc',v)}catch(e){}if(!noSync)queuePush()}
@@ -389,6 +425,7 @@ const addDaysISO=(iso,n)=>{const d=new Date(iso+'T00:00:00');d.setDate(d.getDate
 const openEst=it=>it.openedAt?addDaysISO(it.openedAt,it.openDays||openDaysOf(it.cat)):null;
 const effDate=it=>{const e=openEst(it);return e&&e<it.date?e:it.date};
 const byDate=(a,b)=>effDate(a).localeCompare(effDate(b));
+const U=a=>a.reduce((s,i)=>s+i.qty,0);
 
 function maskDate(el){
  el.addEventListener('input',()=>{const d=el.value.replace(/\D/g,'').slice(0,8);
@@ -426,9 +463,9 @@ function cardHtml(it){const [c,t]=status(it),L=locOf(it.loc),C=catOf(it.cat),big
  <span class="pill ${c}">${it.type} ${fmt(it.date)} · ${t}</span>${op}</div>
  <div class="pq"><div class="step"><button data-q="-1" data-id="${it.id}">−</button><b>${it.qty}</b><button data-q="1" data-id="${it.id}">+</button></div></div></div></div>`}
 function renderHome(){
- const nb=S.items.filter(isBad).length,ns=S.items.filter(isSoon).length,tot=S.items.reduce((a,i)=>a+i.qty,0);
- $('kBad').textContent=nb;$('kSoon').textContent=ns;$('kAll').textContent=S.items.length;
- $('hsub').textContent=S.items.length?tot+' unité'+(tot>1?'s':'')+' · '+S.items.length+' lot'+(S.items.length>1?'s':'')+(nb+ns?' · '+(nb+ns)+' à surveiller':' · tout est en ordre'):'Commencez par ajouter un produit';
+ const nb=U(S.items.filter(isBad)),ns=U(S.items.filter(isSoon)),tot=U(S.items);
+ $('kBad').textContent=nb;$('kSoon').textContent=ns;$('kAll').textContent=tot;
+ $('hsub').textContent=tot?tot+' produit'+(tot>1?'s':'')+' en stock · '+(nb+ns?'⚠️ '+(nb+ns)+' à surveiller':'rien à surveiller ✅'):'Commencez par ajouter un produit';
  const nw=[...S.items].sort((a,b)=>(b.added||0)-(a.added||0)).slice(0,5);
  $('homeNew').innerHTML=nw.length?nw.map(cardHtml).join(''):'<div class="empty"><div>🛒</div>Aucun produit pour le moment.<br>Touchez « Ajouter » pour commencer.</div>';
  const pr=[...S.items].sort(byDate).filter(i=>daysLeft(effDate(i))<=S.soon).slice(0,3);
@@ -436,16 +473,16 @@ function renderHome(){
  const need=S.backup==='both'&&!(S.driveUrl&&S.driveKey);$('banner').style.display=need?'block':'none';$('banner').textContent='☁️ Configurez la synchronisation Google Drive (touchez ici)';
 }
 function render(){
- $('catTiles').innerHTML=[{id:'all',e:'🗂️',n:'Tous'},...S.cats].map(c=>{const n=c.id==='all'?S.items.length:S.items.filter(i=>(i.cat||'autre')===c.id).length;
+ $('catTiles').innerHTML=[{id:'all',e:'🗂️',n:'Tous'},...S.cats].map(c=>{const n=c.id==='all'?U(S.items):U(S.items.filter(i=>(i.cat||'autre')===c.id));
   return `<button class="ctile ${cf===c.id?'on':''}" style="--h:${c.id==='all'?160:catHue(c.id)}" data-ct="${esc(c.id)}"><span class="ce">${c.e}</span><span class="cl">${esc(c.n)}</span><span class="cn">${n}</span></button>`}).join('');
- $('chips').innerHTML=[{id:'all',e:'🗂️',n:'Tous les lieux'},...S.locs].map(l=>{const c=l.id==='all'?S.items.length:S.items.filter(i=>i.loc===l.id).length;
+ $('chips').innerHTML=[{id:'all',e:'🗂️',n:'Tous les lieux'},...S.locs].map(l=>{const c=l.id==='all'?U(S.items):U(S.items.filter(i=>i.loc===l.id));
   return `<button class="chip ${lf===l.id?'on':''}" data-f="${esc(l.id)}">${l.e} ${esc(l.n)} · ${c}</button>`}).join('');
- const nb=S.items.filter(isBad).length,ns=S.items.filter(isSoon).length;
- $('sBad').textContent=nb;$('sSoon').textContent=ns;$('sAll').textContent=S.items.length;
+ const nb=U(S.items.filter(isBad)),ns=U(S.items.filter(isSoon));
+ $('sBad').textContent=nb;$('sSoon').textContent=ns;$('sAll').textContent=U(S.items);
  document.querySelectorAll('#seg .stat').forEach(b=>b.classList.toggle('on',b.dataset.s===sf));
- $('subt').textContent=S.items.length+' lot'+(S.items.length>1?'s':'');
+ $('subt').textContent=U(S.items)+' produit'+(U(S.items)>1?'s':'')+' en stock';
  const items=visible();
- $('count').textContent=items.length+' résultat'+(items.length>1?'s':'');
+ $('count').textContent=U(items)+' produit'+(U(items)>1?'s':'');
  let html='',last=null;const grouped=$('sort').value==='cat';
  items.forEach(it=>{const ci=it.cat||'autre';if(grouped&&ci!==last){last=ci;const C=catOf(ci);html+=`<div class="ghead">${C.e} ${esc(C.n)} · ${items.filter(x=>(x.cat||'autre')===ci).length}</div>`}html+=cardHtml(it)});
  $('list').innerHTML=items.length?html:`<div class="empty"><div>🥗</div>Aucun produit ne correspond.</div>`;
@@ -456,7 +493,7 @@ $('catTiles').onclick=e=>{const b=e.target.closest('[data-ct]');if(b){cf=(cf===b
 $('kpis').onclick=e=>{const k=e.target.closest('[data-kpi]');if(k){sf=k.dataset.kpi;lf='all';cf='all';$('q').value='';go('stock')}};
 $('qaIn').onclick=()=>{go('in');setTimeout(()=>$('btnScan').click(),150)};
 $('qaOut').onclick=()=>{go('out');setTimeout(()=>$('btnScanOut').click(),150)};
-document.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(g&&!g.classList.contains('tab'))go(g.dataset.go)});
+document.addEventListener('click',e=>{if(e.target.closest('[data-help],#helpBtn')){$('helpDlg').showModal();return}const g=e.target.closest('[data-go]');if(g&&!g.classList.contains('tab'))go(g.dataset.go)});
 $('seg').onclick=e=>{const b=e.target.closest('.stat');if(b){sf=(sf===b.dataset.s&&sf!=='all')?'all':b.dataset.s;render()}};
 $('chips').onclick=e=>{const b=e.target.closest('.chip');if(b){lf=b.dataset.f;render()}};
 const listClick=async e=>{
@@ -516,7 +553,7 @@ function applyKnown(k,why){if(k.name)$('name').value=k.name;if(k.brand!=null)$('
  if(k.type)setType(k.type,why);if(k.loc&&S.locs.some(l=>l.id===k.loc)){curLoc=k.loc;fillLocChips()}}
 function stockNote(code){const lots=S.items.filter(i=>i.barcode===code).sort(byDate),b=$('inStock');
  if(!code||!lots.length){b.style.display='none';return}
- b.style.display='block';b.textContent='ℹ️ Déjà en stock : '+lots.reduce((a,i)=>a+i.qty,0)+' unité(s) en '+lots.length+' lot(s). Prochaine date : '+fmt(lots[0].date)+'.'}
+ b.style.display='block';b.textContent='ℹ️ Déjà en stock : '+U(lots)+' unité'+(U(lots)>1?'s':'')+(lots.length>1?' avec '+lots.length+' dates différentes':'')+'. Date la plus proche : '+fmt(lots[0].date)+'.'}
 
 async function lookup(code){
  code=String(code).replace(/\D/g,'');if(code.length<8){toast('Code-barres invalide');return}
@@ -559,7 +596,7 @@ $('btnAdd').onclick=async()=>{
  const merged=addLot({name,brand:$('brand').value.trim(),loc:curLoc,type:curType,date,img,imgBig,cat:$('cat').value,barcode:code},qty);
  if(code)S.known[code]={name,brand:$('brand').value.trim(),img,imgBig,type:curType,loc:curLoc,cat:$('cat').value};
  ['code','name','brand','date'].forEach(i=>$(i).value='');img='';imgBig='';$('cat').value='autre';syncCatPick();setThumb();setQty(1);$('inStock').style.display='none';ocrMsg('');setType('DLC','');
- await save();render();toast(merged?'Quantité ajoutée à un lot existant ✔':'Ajouté au stock ✔');await catchUp();
+ await save();render();toast(merged?'Quantité ajoutée au produit existant (même date) ✔':'Ajouté au stock ✔');await catchUp();
 };
 
 // ---------- Sortie ----------
@@ -570,11 +607,11 @@ async function removeOne(id,quiet){
  S.log.unshift({t:Date.now(),name:it.name,brand:it.brand,loc:it.loc,type:it.type,date:it.date,img:it.img,imgBig:it.imgBig,cat:it.cat,openedAt:it.openedAt,openDays:it.openDays,barcode:it.barcode});S.log=S.log.slice(0,20);
  it.qty--;const left=it.qty;if(it.qty<=0)S.items=S.items.filter(i=>i!==it);
  await save();render();logUI();
- outMsg('✅ Retiré : '+it.name+' ('+it.type+' '+fmt(it.date)+') — '+(left>0?'il en reste '+left+' dans ce lot':'lot épuisé'),'ok',true);
+ outMsg('✅ Retiré : '+it.name+' ('+it.type+' '+fmt(it.date)+') — '+(left>0?'il en reste '+left+' avec cette date':'plus aucun avec cette date'),'ok',true);
  toast('Retiré : '+it.name)}
 async function undoLast(){const l=S.log.shift();if(!l)return;addLot(l,1);await save();render();logUI();outMsg('↩︎ Sortie annulée : '+l.name,'');toast('Sortie annulée')}
 function openPick(lots){$('pickList').innerHTML=lots.map((l,i)=>{const [c,t]=status(l),L=locOf(l.loc);
- return `<div class="lot ${i===0?'rec':''}"><div><b>${esc(l.name)}</b><div class="pm" style="margin:2px 0">${l.type} ${fmt(l.date)} · ${t}</div><div class="pm" style="margin:0">${L.e} ${esc(L.n)} · ×${l.qty}${i===0?' · <b>recommandé</b>':''}</div></div><button class="btn sec" style="width:auto" data-rm="${l.id}">Retirer 1</button></div>`}).join('');
+ return `<div class="lot ${i===0?'rec':''}"><div><b>${esc(l.name)}</b><div class="pm" style="margin:2px 0">${l.type} ${fmt(l.date)} · ${t}</div><div class="pm" style="margin:0">${L.e} ${esc(L.n)} · ×${l.qty}${i===0?' · <b>à consommer en premier</b>':''}</div></div><button class="btn sec" style="width:auto" data-rm="${l.id}">Retirer 1</button></div>`}).join('');
  $('pick').showModal()}
 $('pickList').onclick=async e=>{const b=e.target.closest('[data-rm]');if(b){$('pick').close();await removeOne(b.dataset.rm)}};
 function handleRemoveCode(code){code=String(code).replace(/\D/g,'');
@@ -617,9 +654,10 @@ $('sPlus').onclick=()=>{$('sQty').textContent=+$('sQty').textContent+1};
 $('sSave').onclick=async()=>{const it=curItem(),d=parseFr($('sDate').value),n=$('sName').value.trim();
  if(!it)return;if(!n||!d){toast('Nom et date valide obligatoires');return}
  Object.assign(it,{name:n,brand:$('sBrand').value.trim(),loc:$('sLoc').value,cat:$('sCat').value,type:$('sType').value,date:d,qty:+$('sQty').textContent});
+ if(it.barcode)S.known[it.barcode]={name:it.name,brand:it.brand,img:it.img||'',imgBig:it.imgBig||'',type:it.type,loc:it.loc,cat:it.cat};
  await save();render();$('sheet').close();toast('Modifié ✔')};
 $('sOne').onclick=async()=>{$('sheet').close();await removeOne(sheetId)};
-$('sDel').onclick=async()=>{if(!confirm('Supprimer ce lot ?'))return;S.items=S.items.filter(i=>i.id!==sheetId);await save();render();$('sheet').close()};
+$('sDel').onclick=async()=>{if(!confirm('Supprimer ce produit ?'))return;S.items=S.items.filter(i=>i.id!==sheetId);await save();render();$('sheet').close()};
 $('sClose').onclick=()=>$('sheet').close();
 
 // ---------- Lecture de la date (ML Kit, sur le téléphone) ----------
